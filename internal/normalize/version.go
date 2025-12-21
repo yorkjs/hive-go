@@ -4,10 +4,7 @@ import (
 	"strings"
 )
 
-func NormalizeVersion(version string) string {
-	if version == "" {
-		return "000000000000"
-	}
+func Version(version string) string {
 
 	tokens := strings.Split(version, ".")
 
