@@ -1,0 +1,25 @@
+package hive
+
+// 年月日：2020-10-01
+const DATE_YEAR_MONTH_DATE = "2006-01-02"
+
+// 月日：10-01
+const DATE_MONTH_DATE = "01-02"
+
+// 年月日：2020/10/01
+const DATE_YEAR_MONTH_DATE_SLASH = "2006/01/02"
+
+// 月日：10/01
+const DATE_MONTH_DATE_SLASH = "01/02"
+
+// 年月日：2020.10.01
+const DATE_YEAR_MONTH_DATE_DOT = "2006.01.02"
+
+// 月日：10.01
+const DATE_MONTH_DATE_DOT = "01.02"
+
+// 年月日：2020年10月1日
+const DATE_YEAR_MONTH_DATE_CHINESE = "2006年1月2日"
+
+// 月日：10月1日
+const DATE_MONTH_DATE_CHINESE = "1月2日"

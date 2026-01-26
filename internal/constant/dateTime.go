@@ -1,7 +1,0 @@
-package constant
-
-const (
-	DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND = "2006-01-02 15:04:05" // 年月日 时分秒：2020-10-01 10:00:00
-	DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE        = "2006-01-02 15:04"    // 年月日 时分：2020-10-01 10:00
-	DATE_TIME_MONTH_DATE_HOUR_MINUTE             = "01-02 15:04"         // 月日 时分：10-01 10:00
-)
