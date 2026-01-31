@@ -13,16 +13,21 @@ func TestTimeConvert(t *testing.T) {
 	if TimeToTimestamp(date) != timestamp {
 		t.Errorf("timeToTimestamp 失败: 期望 %d, 得到 %d", timestamp, TimeToTimestamp(date))
 	}
+	if TimeToTimestamp(time.Time{}) != 0 {
+		t.Errorf("timeToTimestamp 失败: 期望 %d, 得到 %d", 0, TimeToTimestamp(time.Time{}))
+	}
+	if TimeToTimestamp(TimestampToTime(timestamp)) != timestamp {
+		t.Errorf("timestampToTime 失败: 期望 %d, 得到 %d", timestamp, TimeToTimestamp(TimestampToTime(timestamp)))
+	}
 
-	resultTime := TimestampToTime(timestamp)
-	if TimeToTimestamp(resultTime) != timestamp {
-		t.Errorf("timestampToTime 失败: 期望 %d, 得到 %d", timestamp, TimeToTimestamp(resultTime))
+	if !TimestampToTime(0).IsZero() {
+		t.Errorf("timestampToTime 失败: 期望 %v, 得到 %v", true, false)
 	}
 
 	// 测试无效日期
 	zeroTime, err := StringToTime("-", DATE_YEAR_MONTH_DATE)
-	if err != nil {
-		t.Fatalf("解析无效日期失败: %v", err)
+	if err == nil {
+		t.Error("解析无效日期应该报错")
 	}
 	if TimeToTimestamp(zeroTime) != 0 {
 		t.Errorf("无效日期转换失败: 期望 0, 得到 %d", TimeToTimestamp(zeroTime))
