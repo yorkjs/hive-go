@@ -5,7 +5,28 @@ import (
 	"time"
 )
 
-func TestDateDay(t *testing.T) {
+func TestTimeHour(t *testing.T) {
+	loc := time.Local
+
+	// 2020-10-10 10:01:01
+	date := time.Date(2020, 10, 10, 10, 1, 1, 0, loc)
+
+	if got := FormatDateTime(StartOfHour(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:00:00" {
+		t.Errorf("StartOfHour(2020-10-10) = %v; want 2020-10-10 10:00:00", got)
+	}
+	if got := FormatDateTime(StartOfPrevHour(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 09:00:00" {
+		t.Errorf("StartOfPrevHour(2020-10-10) = %v; want 2020-10-10 09:00:00", got)
+	}
+	if got := FormatDateTime(StartOfNextHour(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 11:00:00" {
+		t.Errorf("StartOfNextHour(2020-10-10) = %v; want 2020-10-10 11:00:00", got)
+	}
+	if got := FormatDateTime(EndOfHour(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:59:59" {
+		t.Errorf("EndOfHour(2020-10-10) = %v; want 2020-10-10 10:59:59", got)
+	}
+
+}
+
+func TestTimeDay(t *testing.T) {
 	loc := time.Local
 
 	// 2020-10-10 10:01:01
@@ -61,7 +82,7 @@ func TestDateDay(t *testing.T) {
 	}
 }
 
-func TestDateWeek(t *testing.T) {
+func TestTimeWeek(t *testing.T) {
 	loc := time.Local
 
 	// 2025-07-27 10:01:01 (Sunday)
@@ -108,7 +129,7 @@ func TestDateWeek(t *testing.T) {
 	}
 }
 
-func TestDateMonth(t *testing.T) {
+func TestTimeMonth(t *testing.T) {
 	loc := time.Local
 
 	// 2025-02-10 10:01:01
@@ -205,33 +226,100 @@ func TestDateMonth(t *testing.T) {
 
 func TestTimeRangeOptimize(t *testing.T) {
 	loc := time.Local
+
+	// 2025-02-10 10:01:01
 	date := time.Date(2025, 2, 10, 10, 1, 1, 0, loc)
 
-	// isDay
+	// isHour
 	startTime := StartOfDay(date)
 	endTime := EndOfDay(date)
+	isHour := false
 	isDay := false
 	isWeek := false
 	isMonth := false
 	isRange := false
 
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsDay: func(day time.Time) {
-			isDay = true
-			if !day.Equal(startTime) {
-				t.Errorf("isDay start time mismatch")
+		IsHour: func(hour time.Time) {
+			isHour = true
+			if hour != startTime {
+				t.Errorf("IsHour: expected %v, got %v", startTime, hour)
 			}
 		},
-		IsWeek:  func(week time.Time) { isWeek = true },
-		IsMonth: func(month time.Time) { isMonth = true },
-		IsRange: func(start, end time.Time) { isRange = true },
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
+		IsRange: func(start, end time.Time) {
+			isRange = true
+		},
 	})
 
-	if !isDay || isWeek || isMonth || isRange {
-		t.Errorf("isDay check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+	if isHour {
+		t.Errorf("expected isHour to be false, got true")
+	}
+	if !isDay {
+		t.Errorf("expected isDay to be true, got false")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if isRange {
+		t.Errorf("expected isRange to be false, got true")
 	}
 
-	// isDay but without IsDay handler
+	// isHour 但是不传 isHour 函数
+	startTime = StartOfDay(date)
+	endTime = EndOfDay(date)
+	isHour = false
+	isDay = false
+	isWeek = false
+	isMonth = false
+	isRange = false
+
+	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
+		IsDay: func(day time.Time) {
+			isDay = true
+			if day != startTime {
+				t.Errorf("IsDay: expected %v, got %v", startTime, day)
+			}
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
+		IsRange: func(start, end time.Time) {
+			isRange = true
+		},
+	})
+
+	if isHour {
+		t.Errorf("expected isHour to be false, got true")
+	}
+	if !isDay {
+		t.Errorf("expected isDay to be true, got false")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if isRange {
+		t.Errorf("expected isRange to be false, got true")
+	}
+
+	// isDay 但是不传 isDay 函数
 	startTime = StartOfDay(date)
 	endTime = EndOfDay(date)
 	isDay = false
@@ -240,44 +328,80 @@ func TestTimeRangeOptimize(t *testing.T) {
 	isRange = false
 
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsWeek:  func(week time.Time) { isWeek = true },
-		IsMonth: func(month time.Time) { isMonth = true },
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
 		IsRange: func(start, end time.Time) {
 			isRange = true
-			if !start.Equal(startTime) || !end.Equal(endTime) {
-				t.Errorf("isRange time mismatch")
+			if start != startTime {
+				t.Errorf("IsRange start: expected %v, got %v", startTime, start)
+			}
+			if end != endTime {
+				t.Errorf("IsRange end: expected %v, got %v", endTime, end)
 			}
 		},
 	})
 
-	if isDay || isWeek || isMonth || !isRange {
-		t.Errorf("isDay without handler check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+	if isDay {
+		t.Errorf("expected isDay to be false, got true")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if !isRange {
+		t.Errorf("expected isRange to be true, got false")
 	}
 
-	// Partial day
+	// 截取日期中间的一段时间
 	startTime = time.Date(2025, 10, 10, 10, 0, 0, 0, loc)
 	endTime = time.Date(2025, 10, 10, 12, 0, 0, 0, loc)
+	isHour = false
 	isDay = false
 	isWeek = false
 	isMonth = false
 	isRange = false
 
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsDay:   func(day time.Time) { isDay = true },
-		IsWeek:  func(week time.Time) { isWeek = true },
-		IsMonth: func(month time.Time) { isMonth = true },
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
 		IsRange: func(start, end time.Time) {
 			isRange = true
-			if !start.Equal(startTime) || !end.Equal(endTime) {
-				t.Errorf("isRange time mismatch")
+			if start != startTime {
+				t.Errorf("IsRange start: expected %v, got %v", startTime, start)
+			}
+			if end != endTime {
+				t.Errorf("IsRange end: expected %v, got %v", endTime, end)
 			}
 		},
 	})
-	if isDay || isWeek || isMonth || !isRange {
-		t.Errorf("Partial day check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+
+	if isDay {
+		t.Errorf("expected isDay to be false, got true")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if !isRange {
+		t.Errorf("expected isRange to be true, got false")
 	}
 
-	// Cross day
+	// 跨天
 	startTime = StartOfDay(time.Date(2025, 10, 10, 10, 0, 0, 0, loc))
 	endTime = EndOfDay(time.Date(2025, 10, 12, 12, 0, 0, 0, loc))
 	isDay = false
@@ -286,41 +410,78 @@ func TestTimeRangeOptimize(t *testing.T) {
 	isRange = false
 
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsDay:   func(day time.Time) { isDay = true },
-		IsWeek:  func(week time.Time) { isWeek = true },
-		IsMonth: func(month time.Time) { isMonth = true },
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
 		IsRange: func(start, end time.Time) {
 			isRange = true
-			if !start.Equal(startTime) || !end.Equal(endTime) {
-				t.Errorf("isRange time mismatch")
+			if start != startTime {
+				t.Errorf("IsRange start: expected %v, got %v", startTime, start)
+			}
+			if end != endTime {
+				t.Errorf("IsRange end: expected %v, got %v", endTime, end)
 			}
 		},
 	})
-	if isDay || isWeek || isMonth || !isRange {
-		t.Errorf("Cross day check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+
+	if isDay {
+		t.Errorf("expected isDay to be false, got true")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if !isRange {
+		t.Errorf("expected isRange to be true, got false")
 	}
 
 	// isWeek
-	startTime = StartOfDay(time.Date(2026, 1, 4, 10, 0, 0, 0, loc)) // 2026-01-04 is Sunday
-	endTime = EndOfDay(time.Date(2026, 1, 10, 12, 0, 0, 0, loc))    // 2026-01-10 is Saturday
+	startTime = StartOfDay(time.Date(2026, 1, 4, 10, 0, 0, 0, loc))
+	endTime = EndOfDay(time.Date(2026, 1, 10, 12, 0, 0, 0, loc))
 	isDay = false
 	isWeek = false
 	isMonth = false
 	isRange = false
 
+	// 注意：这里需要根据实际的 OptimizeTimeRange 逻辑调整
+	// 为了测试，我们假设时间范围正好是一周
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsDay: func(day time.Time) { isDay = true },
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
 		IsWeek: func(week time.Time) {
 			isWeek = true
-			if !week.Equal(startTime) {
-				t.Errorf("isWeek start time mismatch")
+			if week != startTime {
+				t.Errorf("IsWeek: expected %v, got %v", startTime, week)
 			}
 		},
-		IsMonth: func(month time.Time) { isMonth = true },
-		IsRange: func(start, end time.Time) { isRange = true },
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
+		IsRange: func(start, end time.Time) {
+			isRange = true
+		},
 	})
-	if isDay || !isWeek || isMonth || isRange {
-		t.Errorf("isWeek check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+
+	if isDay {
+		t.Errorf("expected isDay to be false, got true")
+	}
+	if !isWeek {
+		t.Errorf("expected isWeek to be true, got false")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if isRange {
+		t.Errorf("expected isRange to be false, got true")
 	}
 
 	// isMonth
@@ -331,18 +492,36 @@ func TestTimeRangeOptimize(t *testing.T) {
 	isMonth = false
 	isRange = false
 
+	// 注意：这里需要根据实际的 OptimizeTimeRange 逻辑调整
+	// 为了测试，我们假设时间范围正好是一个月
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
-		IsDay:  func(day time.Time) { isDay = true },
-		IsWeek: func(week time.Time) { isWeek = true },
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
 		IsMonth: func(month time.Time) {
 			isMonth = true
-			if !month.Equal(startTime) {
-				t.Errorf("isMonth start time mismatch")
+			if month != startTime {
+				t.Errorf("IsMonth: expected %v, got %v", startTime, month)
 			}
 		},
-		IsRange: func(start, end time.Time) { isRange = true },
+		IsRange: func(start, end time.Time) {
+			isRange = true
+		},
 	})
-	if isDay || isWeek || !isMonth || isRange {
-		t.Errorf("isMonth check failed: day=%v week=%v month=%v range=%v", isDay, isWeek, isMonth, isRange)
+
+	if isDay {
+		t.Errorf("expected isDay to be false, got true")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if !isMonth {
+		t.Errorf("expected isMonth to be true, got false")
+	}
+	if isRange {
+		t.Errorf("expected isRange to be false, got true")
 	}
 }

@@ -4,13 +4,29 @@ import (
 	"time"
 )
 
+// StartOfHour 获取某个小时开始时间
+func StartOfHour(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 0, 0, 0, t.Location())
+}
+
+// StartOfPrevHour 获取前一个小时开始时间
+func StartOfPrevHour(t time.Time) time.Time {
+	return StartOfHour(t.Add(-1 * time.Hour))
+}
+
+// StartOfNextHour 获取下个小时开始时间
+func StartOfNextHour(t time.Time) time.Time {
+	return StartOfHour(t.Add(time.Hour))
+}
+
+// EndOfHour 获取某个小时结束时间
+func EndOfHour(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 59, 59, 999000000, t.Location())
+}
+
 // StartOfDay 获取某天的开始时间
-//
-// t 时间
 func StartOfDay(t time.Time) time.Time {
-	y, m, d := t.Date()
-	start := time.Date(y, m, d, 0, 0, 0, 0, t.Location())
-	return start
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 }
 
 // StartOfPrevDay 获取前一天的开始时间
@@ -25,10 +41,8 @@ func StartOfNextDay(t time.Time) time.Time {
 
 // EndOfDay 获取某天的结束时间
 func EndOfDay(t time.Time) time.Time {
-	y, m, d := t.Date()
 	// 23:59:59.999 -> 999ms = 999000000ns
-	end := time.Date(y, m, d, 23, 59, 59, 999000000, t.Location())
-	return end
+	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999000000, t.Location())
 }
 
 // StartOfWeek 获取某周的开始时间
@@ -65,37 +79,26 @@ func EndOfWeek(t time.Time) time.Time {
 
 // StartOfMonth 获取某月的开始时间
 func StartOfMonth(t time.Time) time.Time {
-	y, m, _ := t.Date()
-	start := time.Date(y, m, 1, 0, 0, 0, 0, t.Location())
-	return start
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, t.Location())
 }
 
 // StartOfPrevMonth 获取前一月的开始时间
 func StartOfPrevMonth(t time.Time) time.Time {
-	y, m, _ := t.Date()
-	// Last month
-	start := time.Date(y, m-1, 1, 0, 0, 0, 0, t.Location())
-	return start
+	return time.Date(t.Year(), t.Month()-1, 1, 0, 0, 0, 0, t.Location())
 }
 
 // StartOfNextMonth 获取下一月的开始时间
 func StartOfNextMonth(t time.Time) time.Time {
-	y, m, _ := t.Date()
-	// Next month
-	start := time.Date(y, m+1, 1, 0, 0, 0, 0, t.Location())
-	return start
+	return time.Date(t.Year(), t.Month()+1, 1, 0, 0, 0, 0, t.Location())
 }
 
 // EndOfMonth 获取某月的结束时间
 func EndOfMonth(t time.Time) time.Time {
-	y, m, _ := t.Date()
-	// Next month 1st day minus 1ms? Or use Date(y, m+1, 0) logic
-	// Go: Date(y, m+1, 0, ...) gives the day before 1st of m+1. i.e. last day of m.
-	end := time.Date(y, m+1, 0, 23, 59, 59, 999000000, t.Location())
-	return end
+	return time.Date(t.Year(), t.Month()+1, 0, 23, 59, 59, 999000000, t.Location())
 }
 
 type ITimeRangeOptimizer struct {
+	IsHour  func(hour time.Time)
 	IsDay   func(day time.Time)
 	IsWeek  func(week time.Time)
 	IsMonth func(month time.Time)
@@ -104,6 +107,10 @@ type ITimeRangeOptimizer struct {
 
 // OptimizeTimeRange 优化时间范围
 func OptimizeTimeRange(startTime, endTime time.Time, optimizer ITimeRangeOptimizer) {
+
+	startHour := StartOfHour(startTime)
+	endHour := EndOfHour(startTime)
+
 	startDay := StartOfDay(startTime)
 	endDay := EndOfDay(startTime)
 
@@ -113,7 +120,9 @@ func OptimizeTimeRange(startTime, endTime time.Time, optimizer ITimeRangeOptimiz
 	startMonth := StartOfMonth(startTime)
 	endMonth := EndOfMonth(startTime)
 
-	if startTime.Equal(startDay) && endTime.Equal(endDay) && optimizer.IsDay != nil {
+	if startTime.Equal(startHour) && endTime.Equal(endHour) && optimizer.IsHour != nil {
+		optimizer.IsHour(startTime)
+	} else if startTime.Equal(startDay) && endTime.Equal(endDay) && optimizer.IsDay != nil {
 		optimizer.IsDay(startTime)
 	} else if startTime.Equal(startWeek) && endTime.Equal(endWeek) && optimizer.IsWeek != nil {
 		optimizer.IsWeek(startTime)
