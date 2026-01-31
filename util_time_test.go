@@ -224,15 +224,15 @@ func TestTimeMonth(t *testing.T) {
 	}
 }
 
-func TestTimeRangeOptimize(t *testing.T) {
+func TestTimeOptimizeTimeRange(t *testing.T) {
 	loc := time.Local
 
 	// 2025-02-10 10:01:01
 	date := time.Date(2025, 2, 10, 10, 1, 1, 0, loc)
 
 	// isHour
-	startTime := StartOfDay(date)
-	endTime := EndOfDay(date)
+	startTime := StartOfHour(date)
+	endTime := EndOfHour(date)
 	isHour := false
 	isDay := false
 	isWeek := false
@@ -260,10 +260,10 @@ func TestTimeRangeOptimize(t *testing.T) {
 		},
 	})
 
-	if isHour {
+	if !isHour {
 		t.Errorf("expected isHour to be false, got true")
 	}
-	if !isDay {
+	if isDay {
 		t.Errorf("expected isDay to be true, got false")
 	}
 	if isWeek {
@@ -277,6 +277,53 @@ func TestTimeRangeOptimize(t *testing.T) {
 	}
 
 	// isHour 但是不传 isHour 函数
+	startTime = StartOfHour(date)
+	endTime = EndOfHour(date)
+	isHour = false
+	isDay = false
+	isWeek = false
+	isMonth = false
+	isRange = false
+
+	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
+		IsDay: func(day time.Time) {
+			isDay = true
+		},
+		IsWeek: func(week time.Time) {
+			isWeek = true
+		},
+		IsMonth: func(month time.Time) {
+			isMonth = true
+		},
+		IsRange: func(start, end time.Time) {
+			isRange = true
+			if start != startTime {
+				t.Errorf("IsRange start: expected %v, got %v", startTime, start)
+			}
+			if end != endTime {
+				t.Errorf("IsRange end: expected %v, got %v", endTime, end)
+			}
+		},
+	})
+
+	if isHour {
+		t.Errorf("expected isHour to be false, got true")
+	}
+	if isDay {
+		t.Errorf("expected isDay to be true, got false")
+	}
+	if isWeek {
+		t.Errorf("expected isWeek to be false, got true")
+	}
+	if isMonth {
+		t.Errorf("expected isMonth to be false, got true")
+	}
+	if !isRange {
+		t.Errorf("expected isRange to be false, got true")
+	}
+
+	// isDay
+
 	startTime = StartOfDay(date)
 	endTime = EndOfDay(date)
 	isHour = false
@@ -286,6 +333,9 @@ func TestTimeRangeOptimize(t *testing.T) {
 	isRange = false
 
 	OptimizeTimeRange(startTime, endTime, ITimeRangeOptimizer{
+		IsHour: func(hour time.Time) {
+			isHour = true
+		},
 		IsDay: func(day time.Time) {
 			isDay = true
 			if day != startTime {
