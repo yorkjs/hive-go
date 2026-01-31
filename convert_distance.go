@@ -55,5 +55,5 @@ func CalculateDistance(longitude1, latitude1, longitude2, latitude2 float64) int
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 
 	// 计算距离
-	return int(math.Floor(EARTH_RADIUS_M * c))
+	return int(EARTH_RADIUS_M * c)
 }
