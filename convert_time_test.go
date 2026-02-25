@@ -10,6 +10,12 @@ func TestTimeConvert(t *testing.T) {
 	date := time.Now()
 	timestamp := TimeToTimestamp(date)
 
+	timeField := TimeToTimeField(date)
+	convertedTime := TimeFieldToTime(timeField)
+	if timestamp != TimeToTimestamp(convertedTime) {
+		t.Errorf("timeToTimestamp 失败: 期望 %d, 得到 %d", TimeToTimestamp(date), TimeToTimestamp(convertedTime))
+	}
+
 	if TimeToTimestamp(date) != timestamp {
 		t.Errorf("timeToTimestamp 失败: 期望 %d, 得到 %d", timestamp, TimeToTimestamp(date))
 	}

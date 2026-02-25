@@ -24,7 +24,7 @@ func DistanceToBackend(value float64) int {
 }
 
 // 定义地球半径（单位：米）
-const EARTH_RADIUS_M = 6371 * 1000
+const earthRadiusM = 6371 * 1000
 
 // 将角度转换为弧度
 func toRadians(degrees float64) float64 {
@@ -55,5 +55,5 @@ func CalculateDistance(longitude1, latitude1, longitude2, latitude2 float64) int
 	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
 
 	// 计算距离
-	return int(EARTH_RADIUS_M * c)
+	return int(earthRadiusM * c)
 }
