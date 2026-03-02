@@ -5,7 +5,7 @@ import "time"
 type ITimeField struct {
 	Year        int
 	Month       int
-	Day         int
+	Date        int
 	Hour        int
 	Minute      int
 	Second      int
@@ -16,7 +16,7 @@ func TimeToTimeField(t time.Time) ITimeField {
 	return ITimeField{
 		Year:        t.Year(),
 		Month:       int(t.Month()),
-		Day:         t.Day(),
+		Date:        t.Day(),
 		Hour:        t.Hour(),
 		Minute:      t.Minute(),
 		Second:      t.Second(),
@@ -26,7 +26,7 @@ func TimeToTimeField(t time.Time) ITimeField {
 
 func TimeFieldToTime(t ITimeField) time.Time {
 	return time.Date(
-		t.Year, time.Month(t.Month), t.Day,
+		t.Year, time.Month(t.Month), t.Date,
 		t.Hour, t.Minute, t.Second, t.Millisecond*1000000,
 		time.Local,
 	)
