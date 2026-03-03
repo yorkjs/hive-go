@@ -1,9 +1,8 @@
 package hive
 
 import (
-	"crypto/rand"
+	"encoding/hex"
 	"fmt"
-	"math/big"
 	"regexp"
 	"strings"
 )
@@ -48,29 +47,6 @@ func TruncateString(str string, maxLength int) string {
 	return string(runes[:maxLength-3]) + "..."
 }
 
-// RandomString 生成指定长度的随机字符串
-func RandomString(length int, chars ...string) string {
-	charSet := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	if len(chars) > 0 && chars[0] != "" {
-		charSet = chars[0]
-	}
-
-	result := make([]byte, length)
-	charLength := big.NewInt(int64(len(charSet)))
-
-	for i := range length {
-		// 使用 crypto/rand 生成安全的随机数
-		randomIndex, err := rand.Int(rand.Reader, charLength)
-		if err != nil {
-			// 降级使用简单的随机数（仅用于演示，实际应用中应处理错误）
-			randomIndex = big.NewInt(int64(i % len(charSet)))
-		}
-		result[i] = charSet[randomIndex.Int64()]
-	}
-
-	return string(result)
-}
-
 // RenderStringTemplate 渲染字符串模板
 // str: 字符串模板，例如：'你好，${name}'
 // data: 数据对象，例如：map[string]interface{}{"name": "张三"}
@@ -94,4 +70,64 @@ func RenderStringTemplate(str string, data map[string]interface{}) string {
 		// 将值转换为字符串
 		return fmt.Sprintf("%v", value)
 	})
+}
+
+// EncodeURIComponent 编码 URI 组件
+func EncodeURIComponent(str string) string {
+	var result strings.Builder
+
+	for _, r := range str {
+		switch {
+		// 字母和数字不编码
+		case (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9'):
+			result.WriteRune(r)
+
+		// encodeURIComponent 不编码的字符（根据 MDN）
+		case r == '-' || r == '_' || r == '.' || r == '!' || r == '~' || r == '*' || r == '\'' || r == '(' || r == ')':
+			result.WriteRune(r)
+
+		// 空格需要编码为 %20
+		case r == ' ':
+			result.WriteString("%20")
+
+		// 其他所有字符都需要编码
+		default:
+			// 将字符转换为 UTF-8 字节序列并编码
+			bytes := []byte(string(r))
+			for _, b := range bytes {
+				result.WriteString(fmt.Sprintf("%%%02X", b))
+			}
+		}
+	}
+
+	return result.String()
+}
+
+// DecodeURIComponent 解码 URI 组件
+func DecodeURIComponent(str string) (string, error) {
+	var (
+		result strings.Builder
+		i      int
+	)
+
+	for i < len(str) {
+		// 处理 %XX 编码
+		if str[i] == '%' && i+2 < len(str) {
+			// 尝试解析两个十六进制字符
+			hexStr := str[i+1 : i+3]
+			b, err := hex.DecodeString(hexStr)
+			if err != nil {
+				return "", err
+			}
+
+			result.Write(b)
+			i += 3
+		} else {
+			// 普通字符直接写入
+			result.WriteByte(str[i])
+			i++
+		}
+	}
+
+	return result.String(), nil
 }

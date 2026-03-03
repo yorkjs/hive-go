@@ -105,53 +105,6 @@ func TestTruncateString(t *testing.T) {
 	}
 }
 
-func TestRandomString(t *testing.T) {
-	for i := 5; i < 100; i++ {
-		t.Run("", func(t *testing.T) {
-			str1 := RandomString(i)
-			str2 := RandomString(i)
-
-			// 检查长度
-			if len([]rune(str1)) != i {
-				t.Errorf("RandomString(%d) length = %d, want %d", i, len([]rune(str1)), i)
-			}
-			if len([]rune(str2)) != i {
-				t.Errorf("RandomString(%d) length = %d, want %d", i, len([]rune(str2)), i)
-			}
-
-			// 检查是否随机（可能偶尔会失败，但概率极低）
-			if str1 == str2 {
-				t.Errorf("RandomString(%d) generated same string twice: %q", i, str1)
-			}
-		})
-	}
-}
-
-// 如果需要运行特定的子测试
-func TestRandomStringLength(t *testing.T) {
-	for i := 5; i < 100; i++ {
-		result := RandomString(i)
-		if len([]rune(result)) != i {
-			t.Errorf("RandomString(%d) = %q (length: %d), want length %d",
-				i, result, len([]rune(result)), i)
-		}
-	}
-}
-
-func TestRandomStringUniqueness(t *testing.T) {
-	// 测试生成的不同字符串是否真的不同
-	const testLength = 10
-	results := make(map[string]bool)
-
-	for i := 0; i < 100; i++ {
-		str := RandomString(testLength)
-		if results[str] {
-			t.Errorf("Duplicate string generated: %q", str)
-		}
-		results[str] = true
-	}
-}
-
 func TestRenderStringTemplate(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -232,5 +185,20 @@ func TestRenderStringTemplate(t *testing.T) {
 					tt.template, tt.data, result, tt.expected)
 			}
 		})
+	}
+}
+
+func TestEncodeURIComponent(t *testing.T) {
+	if EncodeURIComponent("key=123 啊啊+-*/_.!~()'") != "key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'" {
+		t.Errorf("EncodeURIComponent(%q) = %q, want %q",
+			"key=123 啊啊+-*/_.!~()'", EncodeURIComponent("key=123 啊啊+-*/_.!~()'"), "key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'")
+	}
+}
+
+func TestDecodeURIComponent(t *testing.T) {
+	original, _ := DecodeURIComponent("key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'")
+	if original != "key=123 啊啊+-*/_.!~()'" {
+		t.Errorf("DecodeURIComponent(%q) = %q, want %q",
+			"key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'", original, "key=123 啊啊+-*/_.!~()'")
 	}
 }
