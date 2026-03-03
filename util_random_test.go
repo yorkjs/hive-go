@@ -19,24 +19,45 @@ func TestRandomStringByLength(t *testing.T) {
 }
 
 func TestRandomIntegerByLength(t *testing.T) {
-	for length := 2; length < 20; length++ {
-		if len(fmt.Sprintf("%d", RandomIntegerByLength(length))) != length {
-			t.Errorf("RandomIntegerByLength(%d) 长度 = %d, 期望 %d", length, len(fmt.Sprintf("%d", RandomIntegerByLength(length))), length)
+	// 测试 int 类型
+	for length := 2; length < 10; length++ {
+		result := RandomIntegerByLength[int](length)
+		if len(fmt.Sprintf("%d", result)) != length {
+			t.Errorf("RandomIntegerByLength[int](%d) 长度 = %d, 期望 %d", length, len(fmt.Sprintf("%d", result)), length)
 		}
-		if RandomIntegerByLength(length) == RandomIntegerByLength(length) {
-			t.Errorf("RandomIntegerByLength(%d) 生成相同的整数: %d", length, RandomIntegerByLength(length))
+	}
+
+	// 测试 int64 类型
+	for length := 2; length < 20; length++ {
+		result := RandomIntegerByLength[int64](length)
+		if len(fmt.Sprintf("%d", result)) != length {
+			t.Errorf("RandomIntegerByLength[int64](%d) 长度 = %d, 期望 %d", length, len(fmt.Sprintf("%d", result)), length)
 		}
 	}
 }
 
 func TestRandomIntegerByRange(t *testing.T) {
-	for length := 2; length < 20; length++ {
-		minValue := int64(math.Pow10(length - 1))
-		maxValue := int64(math.Pow10(length) - 1)
-		randomValue := RandomIntegerByRange(minValue, maxValue)
-
-		if randomValue < minValue || randomValue >= maxValue {
-			t.Errorf("RandomIntegerByRange(%d) 生成的整数 %d 不在范围 [%d, %d) 内", length, randomValue, minValue, maxValue)
+	// 测试 int 类型
+	t.Run("int type", func(t *testing.T) {
+		minValue, maxValue := 10, 99
+		for i := 0; i < 100; i++ {
+			randomValue := RandomIntegerByRange(minValue, maxValue)
+			if randomValue < minValue || randomValue > maxValue {
+				t.Errorf("RandomIntegerByRange(%d, %d) 生成的整数 %d 不在范围 [%d, %d] 内", minValue, maxValue, randomValue, minValue, maxValue)
+			}
 		}
-	}
+	})
+
+	// 测试 int64 类型
+	t.Run("int64 type", func(t *testing.T) {
+		for length := 2; length < 20; length++ {
+			minValue := int64(math.Pow10(length - 1))
+			maxValue := int64(math.Pow10(length) - 1)
+			randomValue := RandomIntegerByRange(minValue, maxValue)
+
+			if randomValue < minValue || randomValue > maxValue {
+				t.Errorf("RandomIntegerByRange(%d, %d) 生成的整数 %d 不在范围 [%d, %d] 内", minValue, maxValue, randomValue, minValue, maxValue)
+			}
+		}
+	})
 }

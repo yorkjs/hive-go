@@ -7,29 +7,31 @@ import (
 )
 
 // RandomIntegerByLength 生成指定长度的随机整数
-func RandomIntegerByLength(length int) int64 {
-	min := int64(math.Pow10(length - 1))
-	max := int64(math.Pow10(length)) - 1
+func RandomIntegerByLength[T IntegerType](length int) T {
+	min := T(math.Pow10(length - 1))
+	max := T(math.Pow10(length)) - 1
 
 	return RandomIntegerByRange(min, max+1)
 }
 
 // RandomIntegerByRange 生成指定范围内的随机整数
-func RandomIntegerByRange(min, max int64) int64 {
-	if min > max {
+// 支持 int 和 int64 类型，返回类型与参数类型保持一致
+func RandomIntegerByRange[T IntegerType](min, max T) T {
+	if min >= max {
 		return min
 	}
 
-	if min == max {
-		return min
-	}
-
-	n, err := rand.Int(rand.Reader, big.NewInt(max-min))
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(max-min)))
 	if err != nil {
 		return min
 	}
 
-	return min + n.Int64()
+	return min + T(n.Int64())
+}
+
+// IntegerType 定义支持的整数类型约束
+type IntegerType interface {
+	~int | ~int64
 }
 
 // RandomStringByLength 生成指定长度的随机字符串
