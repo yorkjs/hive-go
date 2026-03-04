@@ -117,3 +117,29 @@ func PadStringStart(str string, length int) string {
 	}
 	return strings.Repeat("0", length-len(str)) + str
 }
+
+var (
+	// 允许的字符模式：字母、数字、中文、常见标点符号
+	// \u4e00-\u9fa5 匹配所有中文字符
+	allowedPattern = regexp.MustCompile(`[^a-zA-Z0-9\x{4e00}-\x{9fa5} ，。！？；：""''()（）\[\]【】、·.,!?;:\-_']`)
+)
+
+// HasSpecialCharacters 判断字符串是否包含特殊字符
+func HasSpecialCharacters(str string) bool {
+	if str == "" {
+		return false
+	}
+
+	// 查找是否包含不允许的字符
+	return allowedPattern.MatchString(str)
+}
+
+// RemoveSpecialCharacters 移除字符串中的特殊字符
+func RemoveSpecialCharacters(str string) string {
+	if str == "" {
+		return ""
+	}
+
+	// 移除所有不允许的字符
+	return TrimString(allowedPattern.ReplaceAllString(str, ""))
+}

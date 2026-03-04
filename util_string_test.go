@@ -227,3 +227,109 @@ func TestPadStringStart(t *testing.T) {
 			"111", 3, PadStringStart("111", 3), "111")
 	}
 }
+
+func TestHasSpecialCharacters(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected bool
+	}{
+		{
+			name:     "允许的字符组合（包含中文和标点）",
+			input:    "abc,[1]23. 你好，【世界】！",
+			expected: false,
+		},
+		{
+			name:     "包含制表符和换行符",
+			input:    "abc,123. \t\n",
+			expected: true,
+		},
+		{
+			name:     "包含表情符号",
+			input:    "abc,123.☺️",
+			expected: true,
+		},
+		{
+			name:     "普通文本包含空格",
+			input:    " abc,  123. ",
+			expected: false,
+		},
+		{
+			name:     "空字符串",
+			input:    "",
+			expected: false,
+		},
+		{
+			name:     "只包含允许的英文标点",
+			input:    ".,!?;:-_",
+			expected: false,
+		},
+		{
+			name:     "包含不允许的符号@",
+			input:    "test@email",
+			expected: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := HasSpecialCharacters(tt.input)
+			if result != tt.expected {
+				t.Errorf("HasSpecialCharacters(%q) = %v, 期望 %v", tt.input, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestRemoveSpecialCharacters(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "允许的字符组合保持不变",
+			input:    "abc,[1]23. 你好，【世界】！",
+			expected: "abc,[1]23. 你好，【世界】！",
+		},
+		{
+			name:     "移除制表符和换行符",
+			input:    "abc,123. \t\n",
+			expected: "abc,123.",
+		},
+		{
+			name:     "移除表情符号",
+			input:    "abc,123.☺️",
+			expected: "abc,123.",
+		},
+		{
+			name:     "保留空格但去除首尾空格",
+			input:    " abc,  123. ",
+			expected: "abc,  123.",
+		},
+		{
+			name:     "空字符串",
+			input:    "",
+			expected: "",
+		},
+		{
+			name:     "只包含特殊字符",
+			input:    "@#$%^&*",
+			expected: "",
+		},
+		{
+			name:     "混合允许和不允许字符",
+			input:    "Hello@World#2024$Test",
+			expected: "HelloWorld2024Test",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := RemoveSpecialCharacters(tt.input)
+			if result != tt.expected {
+				t.Errorf("RemoveSpecialCharacters(%q) = %q, 期望 %q", tt.input, result, tt.expected)
+			}
+		})
+	}
+}
