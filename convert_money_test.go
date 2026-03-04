@@ -16,13 +16,13 @@ func TestMoneyConvert(t *testing.T) {
 		t.Errorf("MoneyToDisplay(1100000, MONEY_TEN_THOUSAND_YUAN_TO_CENT) = %v; want 1.1", got)
 	}
 
-	if got := MoneyToBackend(1.01); got != 101 {
+	if got := MoneyToBackend[int](1.01); got != 101 {
 		t.Errorf("MoneyToBackend(1.01) = %v; want 101", got)
 	}
-	if got := MoneyToBackend(1.01, MONEY_YUAN_TO_CENT); got != 101 {
+	if got := MoneyToBackend[int](1.01, MONEY_YUAN_TO_CENT); got != 101 {
 		t.Errorf("MoneyToBackend(1.01, MONEY_YUAN_TO_CENT) = %v; want 101", got)
 	}
-	if got := MoneyToBackend(1.01, MONEY_TEN_THOUSAND_YUAN_TO_CENT); got != 1010000 {
+	if got := MoneyToBackend[int](1.01, MONEY_TEN_THOUSAND_YUAN_TO_CENT); got != 1010000 {
 		t.Errorf("MoneyToBackend(1.01, MONEY_TEN_THOUSAND_YUAN_TO_CENT) = %v; want 1010000", got)
 	}
 }

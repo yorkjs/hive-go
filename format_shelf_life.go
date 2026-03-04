@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-func FormatShelfLife(value int) string {
+func FormatShelfLife[T IntegerType](value T) string {
 	var result []string
 
-	data := NormalizeShelfLife(value)
+	data := NormalizeShelfLife[T](value)
 	if data.Years > 0 {
 		result = append(result, fmt.Sprintf("%d年", data.Years))
 	}

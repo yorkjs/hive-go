@@ -119,10 +119,10 @@ func TestDivideNumber(t *testing.T) {
 	if got := DivideNumber(50, 10); got != 5 {
 		t.Errorf("DivideNumber(50, 10) = %v; want 5", got)
 	}
-	if got := DivideNumber(50, 100); got != 0.5 {
+	if got := DivideNumber[float64](50, 100); got != 0.5 {
 		t.Errorf("DivideNumber(50, 100) = %v; want 0.5", got)
 	}
-	if got := DivideNumber(50, 1000); got != 0.05 {
+	if got := DivideNumber[float64](50, 1000); got != 0.05 {
 		t.Errorf("DivideNumber(50, 1000) = %v; want 0.05", got)
 	}
 	if got := DivideNumber(10, 0.5); got != 20 {
@@ -131,16 +131,16 @@ func TestDivideNumber(t *testing.T) {
 	if got := DivideNumber(10, 0.2); got != 50 {
 		t.Errorf("DivideNumber(10, 0.2) = %v; want 50", got)
 	}
-	if got := DivideNumber(201, 100); got != 2.01 {
+	if got := DivideNumber[float64](201, 100); got != 2.01 {
 		t.Errorf("DivideNumber(201, 100) = %v; want 2.01", got)
 	}
-	if got := DivideNumber(168, 100); got != 1.68 {
+	if got := DivideNumber[float64](168, 100); got != 1.68 {
 		t.Errorf("DivideNumber(168, 100) = %v; want 1.68", got)
 	}
 	if got := DivideNumber(5000000, 100); got != 50000 {
 		t.Errorf("DivideNumber(5000000, 100) = %v; want 50000", got)
 	}
-	if got := DivideNumber(3, -2); got != -1.5 {
+	if got := DivideNumber[float64](3, -2); got != -1.5 {
 		t.Errorf("DivideNumber(3, -2) = %v; want -1.5", got)
 	}
 	if got := DivideNumber(-6, -3); got != 2 {

@@ -7,7 +7,7 @@ import (
 // DiscountToDisplay 万分比 转换为 折扣，最多保留 1 位小数
 //
 // value 后端的比例值
-func DiscountToDisplay(value int) float64 {
+func DiscountToDisplay[T IntegerType](value T) float64 {
 	result := DivideNumber(float64(value), 1000)
 	// 如果小数部分为 0，返回整数部分
 	// 如果有小数，保留 1 位小数
@@ -22,7 +22,7 @@ func DiscountToDisplay(value int) float64 {
 // DiscountToBackend 折扣 转换为 万分比
 //
 // value 前端的比例值
-func DiscountToBackend(value float64) int {
+func DiscountToBackend[T IntegerType](value float64) T {
 	var v float64
 	if IsInteger(value) {
 		v = value
@@ -31,5 +31,5 @@ func DiscountToBackend(value float64) int {
 			TruncateNumber(value, 1),
 		)
 	}
-	return int(TimesNumber(v, 1000))
+	return T(TimesNumber(v, 1000))
 }

@@ -188,6 +188,21 @@ func TestRenderStringTemplate(t *testing.T) {
 	}
 }
 
+func TestPadStringStart(t *testing.T) {
+	if PadStringStart("1", 3) != "001" {
+		t.Errorf("PadStringStart(%q, %d) = %q, want %q",
+			"1", 3, PadStringStart("1", 3), "001")
+	}
+	if PadStringStart("11", 3) != "011" {
+		t.Errorf("PadStringStart(%q, %d) = %q, want %q",
+			"11", 3, PadStringStart("11", 3), "011")
+	}
+	if PadStringStart("111", 3) != "111" {
+		t.Errorf("PadStringStart(%q, %d) = %q, want %q",
+			"111", 3, PadStringStart("111", 3), "111")
+	}
+}
+
 func TestEncodeURIComponent(t *testing.T) {
 	if EncodeURIComponent("key=123 啊啊+-*/_.!~()'") != "key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'" {
 		t.Errorf("EncodeURIComponent(%q) = %q, want %q",

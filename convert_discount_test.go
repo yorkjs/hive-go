@@ -13,13 +13,13 @@ func TestDiscountConvert(t *testing.T) {
 		t.Errorf("DiscountToDisplay(8880) = %v; want 8.8", got)
 	}
 
-	if got := DiscountToBackend(8); got != 8000 {
+	if got := DiscountToBackend[int](8); got != 8000 {
 		t.Errorf("DiscountToBackend(8) = %v; want 8000", got)
 	}
-	if got := DiscountToBackend(8.8); got != 8800 {
+	if got := DiscountToBackend[int](8.8); got != 8800 {
 		t.Errorf("DiscountToBackend(8.8) = %v; want 8800", got)
 	}
-	if got := DiscountToBackend(8.88); got != 8800 {
+	if got := DiscountToBackend[int](8.88); got != 8800 {
 		t.Errorf("DiscountToBackend(8.88) = %v; want 8800", got)
 	}
 }

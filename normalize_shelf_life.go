@@ -12,7 +12,7 @@ type IShelfLife struct {
 	Hours  int
 }
 
-func NormalizeShelfLife(value int) *IShelfLife {
+func NormalizeShelfLife[T IntegerType](value T) *IShelfLife {
 	result := &IShelfLife{}
 
 	if value <= 0 {
@@ -23,24 +23,24 @@ func NormalizeShelfLife(value int) *IShelfLife {
 
 	years := remainingValue / SHELF_LIFE_YEAR
 	if years > 0 {
-		result.Years = years
+		result.Years = int(years)
 		remainingValue -= SHELF_LIFE_YEAR * years
 	}
 
 	months := remainingValue / SHELF_LIFE_MONTH
 	if months > 0 {
-		result.Months = months
+		result.Months = int(months)
 		remainingValue -= SHELF_LIFE_MONTH * months
 	}
 
 	days := remainingValue / SHELF_LIFE_DAY
 	if days > 0 {
-		result.Days = days
+		result.Days = int(days)
 		remainingValue -= SHELF_LIFE_DAY * days
 	}
 
 	if remainingValue > 0 {
-		result.Hours = remainingValue
+		result.Hours = int(remainingValue)
 	}
 
 	return result

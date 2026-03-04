@@ -72,6 +72,13 @@ func RenderStringTemplate(str string, data map[string]interface{}) string {
 	})
 }
 
+func PadStringStart(str string, length int) string {
+	if len(str) >= length {
+		return str
+	}
+	return strings.Repeat("0", length-len(str)) + str
+}
+
 // EncodeURIComponent 编码 URI 组件
 func EncodeURIComponent(str string) string {
 	var result strings.Builder

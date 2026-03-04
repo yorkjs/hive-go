@@ -29,11 +29,6 @@ func RandomIntegerByRange[T IntegerType](min, max T) T {
 	return min + T(n.Int64())
 }
 
-// IntegerType 定义支持的整数类型约束
-type IntegerType interface {
-	~int | ~int64
-}
-
 // RandomStringByLength 生成指定长度的随机字符串
 func RandomStringByLength(length int, chars ...string) string {
 	charSet := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
