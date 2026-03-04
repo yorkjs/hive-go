@@ -22,6 +22,31 @@ func TestGetStringLength(t *testing.T) {
 	}
 }
 
+func TestGetStringWidth(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected int
+	}{
+		{"纯数字", "12", 2},
+		{"数字+大写字母", "12A", 3},
+		{"数字+大小写字母", "12Aa", 4},
+		{"数字+字母+中文", "12Aa啊", 6},
+		{"数字+字母+中文+下划线", "12Aa啊_", 7},
+		{"数字+字母+中文+下划线+逗号", "12Aa啊_，", 9},
+		{"数字+字母+中文+下划线+逗号+句号", "12Aa啊_，。", 11},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := GetStringWidth(tt.input)
+			if result != tt.expected {
+				t.Errorf("GetStringWidth(%q) = %v, 期望 %v", tt.input, result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestTrimString(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -200,20 +225,5 @@ func TestPadStringStart(t *testing.T) {
 	if PadStringStart("111", 3) != "111" {
 		t.Errorf("PadStringStart(%q, %d) = %q, want %q",
 			"111", 3, PadStringStart("111", 3), "111")
-	}
-}
-
-func TestEncodeURIComponent(t *testing.T) {
-	if EncodeURIComponent("key=123 啊啊+-*/_.!~()'") != "key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'" {
-		t.Errorf("EncodeURIComponent(%q) = %q, want %q",
-			"key=123 啊啊+-*/_.!~()'", EncodeURIComponent("key=123 啊啊+-*/_.!~()'"), "key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'")
-	}
-}
-
-func TestDecodeURIComponent(t *testing.T) {
-	original, _ := DecodeURIComponent("key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'")
-	if original != "key=123 啊啊+-*/_.!~()'" {
-		t.Errorf("DecodeURIComponent(%q) = %q, want %q",
-			"key%3D123%20%E5%95%8A%E5%95%8A%2B-*%2F_.!~()'", original, "key=123 啊啊+-*/_.!~()'")
 	}
 }

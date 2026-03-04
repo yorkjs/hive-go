@@ -2,8 +2,11 @@ package hive
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math"
 	"math/big"
+	"strings"
+	"time"
 )
 
 // RandomIntegerByLength 生成指定长度的随机整数
@@ -50,4 +53,17 @@ func RandomStringByLength(length int, chars ...string) string {
 	}
 
 	return string(result)
+}
+
+// RandomStringByCurrentTime 根据当前时间生成随机字符串，可用 tailLength 控制重复的概率
+func RandomStringByCurrentTime(tailLength int) string {
+	currentTime := time.Now()
+	strTime := currentTime.Format("20060102150405.000")
+	timeStr := strings.Replace(strTime, ".", "", 1)
+	// 移除毫秒前的小数点，使其成为连续的数字
+	// 为了降低重复的概率，后面再加指定长度的随机数
+	if tailLength > 0 {
+		timeStr += fmt.Sprintf("%d", RandomIntegerByLength[int64](tailLength))
+	}
+	return timeStr
 }

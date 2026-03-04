@@ -1,16 +1,55 @@
 package hive
 
 import (
-	"encoding/hex"
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
-// GetStringLength 获取字符串长度
-// 注意：中文算 1 个字符
+// GetStringLength 获取字符串字符数量
+//
+// 注意：中文和英文都算 1 个字符
 func GetStringLength(str string) int {
-	return len([]rune(str))
+	return utf8.RuneCountInString(str)
+}
+
+// GetStringWidth 获取字符串宽度，此函数常用于排版辅助计算
+//
+// 注意：中文算 2 个单位，英文数字算 1 个单位
+func GetStringWidth(str string) int {
+	if str == "" {
+		return 0
+	}
+
+	var (
+		wideCount int
+		length    int
+	)
+
+	for i := 0; i < len(str); {
+		r, size := utf8.DecodeRuneInString(str[i:])
+		if r == utf8.RuneError {
+			// 处理无效 UTF-8 字符
+			i++
+			continue
+		}
+
+		if isWideChar(r) {
+			wideCount++
+		}
+		length++
+		i += size
+	}
+
+	return wideCount*2 + (length - wideCount)
+}
+
+// isWideChar 判断字符是否为宽字符（中文字符、全角标点等）
+func isWideChar(r rune) bool {
+	// 判断是否为非 ASCII 字符（大于 0xFF）
+	// 或者是否为全角片假名字符范围（FF61-FF9F）
+	return r > 0xFF || (r >= 0xFF61 && r <= 0xFF9F)
 }
 
 // TrimString 移除字符串开头和结尾的空白符
@@ -77,64 +116,4 @@ func PadStringStart(str string, length int) string {
 		return str
 	}
 	return strings.Repeat("0", length-len(str)) + str
-}
-
-// EncodeURIComponent 编码 URI 组件
-func EncodeURIComponent(str string) string {
-	var result strings.Builder
-
-	for _, r := range str {
-		switch {
-		// 字母和数字不编码
-		case (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9'):
-			result.WriteRune(r)
-
-		// encodeURIComponent 不编码的字符（根据 MDN）
-		case r == '-' || r == '_' || r == '.' || r == '!' || r == '~' || r == '*' || r == '\'' || r == '(' || r == ')':
-			result.WriteRune(r)
-
-		// 空格需要编码为 %20
-		case r == ' ':
-			result.WriteString("%20")
-
-		// 其他所有字符都需要编码
-		default:
-			// 将字符转换为 UTF-8 字节序列并编码
-			bytes := []byte(string(r))
-			for _, b := range bytes {
-				result.WriteString(fmt.Sprintf("%%%02X", b))
-			}
-		}
-	}
-
-	return result.String()
-}
-
-// DecodeURIComponent 解码 URI 组件
-func DecodeURIComponent(str string) (string, error) {
-	var (
-		result strings.Builder
-		i      int
-	)
-
-	for i < len(str) {
-		// 处理 %XX 编码
-		if str[i] == '%' && i+2 < len(str) {
-			// 尝试解析两个十六进制字符
-			hexStr := str[i+1 : i+3]
-			b, err := hex.DecodeString(hexStr)
-			if err != nil {
-				return "", err
-			}
-
-			result.Write(b)
-			i += 3
-		} else {
-			// 普通字符直接写入
-			result.WriteByte(str[i])
-			i++
-		}
-	}
-
-	return result.String(), nil
 }

@@ -3,7 +3,10 @@ package hive
 import (
 	"fmt"
 	"math"
+	"regexp"
+	"strings"
 	"testing"
+	"time"
 )
 
 // TestRandomStringByLength 测试随机字符串生成
@@ -60,4 +63,32 @@ func TestRandomIntegerByRange(t *testing.T) {
 			}
 		}
 	})
+}
+
+func TestRandomStringByCurrentTime(t *testing.T) {
+	// 测试长度
+	if len(RandomStringByCurrentTime(-1)) != 17 {
+		t.Errorf("RandomStringByCurrentTime(-1) 长度应为 17, 实际为 %d", len(RandomStringByCurrentTime(-1)))
+	}
+
+	if len(RandomStringByCurrentTime(0)) != 17 {
+		t.Errorf("RandomStringByCurrentTime(0) 长度应为 17, 实际为 %d", len(RandomStringByCurrentTime(0)))
+	}
+
+	if len(RandomStringByCurrentTime(3)) != 20 {
+		t.Errorf("RandomStringByCurrentTime(3) 长度应为 20, 实际为 %d", len(RandomStringByCurrentTime(3)))
+	}
+
+	// 测试是否只包含数字
+	result := RandomStringByCurrentTime(3)
+	digitRegex := regexp.MustCompile(`^\d+$`)
+	if !digitRegex.MatchString(result) {
+		t.Errorf("RandomStringByCurrentTime(3) 应该只包含数字, 实际得到: %s", result)
+	}
+
+	// 测试是否以当前年份开头
+	currentYear := time.Now().Format("2006")
+	if !strings.HasPrefix(result, currentYear) {
+		t.Errorf("RandomStringByCurrentTime(3) 应该以 %s 开头, 实际得到: %s", currentYear, result)
+	}
 }
