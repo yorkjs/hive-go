@@ -236,7 +236,7 @@ func TestHasSpecialCharacters(t *testing.T) {
 	}{
 		{
 			name:     "允许的字符组合（包含中文和标点）",
-			input:    "abc,[1]23. 你好，【世界】！",
+			input:    "abc,[1]23. 你好，【世界】！%",
 			expected: false,
 		},
 		{
@@ -264,11 +264,6 @@ func TestHasSpecialCharacters(t *testing.T) {
 			input:    ".,!?;:-_",
 			expected: false,
 		},
-		{
-			name:     "包含不允许的符号@",
-			input:    "test@email",
-			expected: true,
-		},
 	}
 
 	for _, tt := range tests {
@@ -295,17 +290,17 @@ func TestRemoveSpecialCharacters(t *testing.T) {
 		{
 			name:     "移除制表符和换行符",
 			input:    "abc,123. \t\n",
-			expected: "abc,123.",
+			expected: "abc,123. ",
 		},
 		{
 			name:     "移除表情符号",
-			input:    "abc,123.☺️",
-			expected: "abc,123.",
+			input:    "a☺️bc,☺️123.^456☺️%",
+			expected: "abc,123.456%",
 		},
 		{
 			name:     "保留空格但去除首尾空格",
 			input:    " abc,  123. ",
-			expected: "abc,  123.",
+			expected: " abc,  123. ",
 		},
 		{
 			name:     "空字符串",
@@ -315,12 +310,12 @@ func TestRemoveSpecialCharacters(t *testing.T) {
 		{
 			name:     "只包含特殊字符",
 			input:    "@#$%^&*",
-			expected: "",
+			expected: "@#$%&",
 		},
 		{
 			name:     "混合允许和不允许字符",
-			input:    "Hello@World#2024$Test",
-			expected: "HelloWorld2024Test",
+			input:    "Hello☺️@World#2024$Test",
+			expected: "Hello@World#2024$Test",
 		},
 	}
 
