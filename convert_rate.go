@@ -17,17 +17,25 @@ func RateToDisplay[T IntegerType](value T) float64 {
 // RateToBackend 百分比 转换为 万分比
 //
 // value 前端的比例值
-func RateToBackend[T IntegerType](value float64) T {
-	return T(TimesNumber(value, 100))
+func RateToBackend[T NumberType](value T) int {
+	return int(TimesNumber(value, 100))
 }
 
-// CalculateRate 计算万分比
-//
-// value1 除数
-// value2 被除数
-func CalculateRate[T IntegerType](value1, value2 float64) T {
+// CalculateRate 计算万分比，即 value1 / value2 得到一个万分比
+// value1: 除数
+// value2: 被除数
+// 返回万分比比例
+func CalculateRate[T NumberType](value1, value2 T) int {
 	if value2 == 0 {
 		return 0
 	}
-	return T(DivideNumber(value1*10000, value2))
+	return int(DivideNumber(TimesNumber(value1, 10000), value2))
+}
+
+// ApplyRate 根据万分比比例计算数值
+// value: 原始数值
+// rate: 万分比比例
+// 返回计算后的数值，仅返回整数部分
+func ApplyRate[T NumberType](value, rate T) int {
+	return int(DivideNumber(TimesNumber(value, rate), 10000))
 }
