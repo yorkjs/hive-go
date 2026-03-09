@@ -100,11 +100,6 @@ func ShortNumber[T NumberType](value T, formatUnshort func(T) string) string {
 	return formatUnshort(value)
 }
 
-func stringToFloat64(str string) float64 {
-	f, _ := strconv.ParseFloat(str, 64)
-	return f
-}
-
 // parseInteger 解析字符串中的整型
 func ParseInteger(str string, radix ...int) (int64, error) {
 	// 处理可选参数radix
