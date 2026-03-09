@@ -1,6 +1,7 @@
 package hive
 
 import (
+	"math"
 	"testing"
 )
 
@@ -178,5 +179,120 @@ func TestTruncateNumber(t *testing.T) {
 	}
 	if got := TruncateNumber(1234567.89, 3); got != "1234567.890" {
 		t.Errorf("TruncateNumber(1234567.89, 3) = %q; want \"1234567.890\"", got)
+	}
+}
+
+// 测试 ParseInteger 函数
+func TestParseInteger(t *testing.T) {
+	testCases := []struct {
+		name    string
+		input   string
+		radix   []int // 可选参数
+		want    interface{}
+		wantErr bool
+	}{
+		// 不传 radix 参数（默认行为）
+		{"默认-空格前缀", " 123", nil, int64(123), false},
+		{"默认-空格后缀", "123 ", nil, int64(123), false},
+		{"默认-空格前后", " 123 ", nil, int64(123), false},
+		{"默认-正常数字", "123", nil, int64(123), false},
+		{"默认-负数", "-123", nil, int64(-123), false},
+		{"默认-正数", "+123", nil, int64(123), false},
+		{"默认-数字带单位", "123px", nil, int64(123), false},
+		{"默认-单位在前", "px123", nil, int64(0), true},
+		{"默认-浮点数", "123.456", nil, int64(123), false},
+		{"默认-浮点数带单位", "123.456px", nil, int64(123), false},
+		{"默认-二进制字符串", "101", nil, int64(101), false},
+		{"默认-二进制字符串", "101", []int{2}, int64(5), false},
+		{"默认-二进制带单位", "101a", nil, int64(101), false},
+		{"默认-二进制带单位", "101a", []int{2}, int64(5), false},
+		{"默认-十六进制0XFF", "0XFF", nil, int64(255), false},
+		{"默认-十六进制0xFF", "0xFF", []int{16}, int64(255), false},
+
+		{"默认-十六进制0XFF", "0xFF", nil, int64(255), false},
+		{"默认-十六进制0xFF", "0xFF", []int{16}, int64(255), false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var got int64
+			var err error
+
+			// 根据是否传 radix 参数调用函数
+			if tc.radix == nil {
+				got, err = ParseInteger(tc.input)
+			} else {
+				got, err = ParseInteger(tc.input, tc.radix[0])
+			}
+
+			// 检查错误
+			if tc.wantErr {
+				if err == nil {
+					t.Errorf("ParseInteger(%q, %v) expected error but got nil, result=%v",
+						tc.input, tc.radix, got)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("ParseInteger(%q, %v) unexpected error: %v",
+					tc.input, tc.radix, err)
+				return
+			}
+
+			// 检查结果
+			if got != tc.want {
+				t.Errorf("ParseInteger(%q, %v) = %v, want %v",
+					tc.input, tc.radix, got, tc.want)
+			}
+		})
+	}
+}
+
+// 测试 ParseNumber 函数
+func TestParseNumber(t *testing.T) {
+	testCases := []struct {
+		name    string
+		input   string
+		want    float64
+		wantErr bool
+	}{
+		{"空格前缀", " 123", 123, false},
+		{"空格后缀", "123 ", 123, false},
+		{"空格前后", " 123 ", 123, false},
+		{"正常整数", "123", 123, false},
+		{"负数", "-123", -123, false},
+		{"正数", "+123", 123, false},
+		{"整数带单位", "123px", 123, false},
+		{"单位在前", "px123", 0, true},
+		{"浮点数", "123.456", 123.456, false},
+		{"浮点数带单位", "123.456px", 123.456, false},
+		{"十六进制0xFF", "0xFF", 0, false},
+		{"十六进制0XFF", "0XFF", 0, false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := ParseNumber(tc.input)
+
+			// 检查错误
+			if tc.wantErr {
+				if err == nil {
+					t.Errorf("ParseNumber(%q) expected error but got nil, result=%v",
+						tc.input, got)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("ParseNumber(%q) unexpected error: %v", tc.input, err)
+				return
+			}
+
+			// 检查结果（浮点数比较需要考虑精度）
+			if math.Abs(got-tc.want) > 1e-9 {
+				t.Errorf("ParseNumber(%q) = %v, want %v", tc.input, got, tc.want)
+			}
+		})
 	}
 }
