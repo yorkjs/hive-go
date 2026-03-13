@@ -110,8 +110,4 @@ func TestFormatArea(t *testing.T) {
 			}
 		})
 	}
-
-	if got := FormatCity("中国台湾"); got != "台湾" {
-		t.Errorf("FormatCity(中国台湾) = %v; want 台湾", got)
-	}
 }

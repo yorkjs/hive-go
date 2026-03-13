@@ -296,3 +296,15 @@ func TestParseNumber(t *testing.T) {
 		})
 	}
 }
+
+func TestHasDecimal(t *testing.T) {
+	if got := HasDecimal(1); got != false {
+		t.Errorf("HasDecimal(1) = %v; want false", got)
+	}
+	if got := HasDecimal(1.0); got != false {
+		t.Errorf("HasDecimal(1.0) = %v; want false", got)
+	}
+	if got := HasDecimal(1.1); got != true {
+		t.Errorf("HasDecimal(1.1) = %v; want true", got)
+	}
+}

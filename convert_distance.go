@@ -10,10 +10,10 @@ import (
 func DistanceToDisplay[T IntegerType](value T) float64 {
 	result := DivideNumber(float64(value), 1000)
 	// 如果小数部分为 0，返回整数部分
-	if IsInteger(result) {
-		return math.Floor(result)
+	if HasDecimal(result) {
+		return result
 	}
-	return result
+	return math.Floor(result)
 }
 
 // DistanceToBackend 千米 转换为 米

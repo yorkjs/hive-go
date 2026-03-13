@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-func FormatDuration(milliseconds int64) string {
+func FormatDuration(value int64) string {
 	var result []string
 
-	data := NormalizeDuration(milliseconds)
+	data := NormalizeDuration(value)
 	if data.Days > 0 {
 		result = append(result, fmt.Sprintf("%d天", data.Days))
 	}

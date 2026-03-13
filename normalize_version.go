@@ -8,8 +8,8 @@ import (
 //
 // version 如 '1.2.3'，最多支持三段，每段的子版本号不超过 9999
 // returns 标准化后的版本号，12 位长度
-func NormalizeVersion(version string) string {
-	tokens := strings.Split(version, ".")
+func NormalizeVersion(value string) string {
+	tokens := strings.Split(value, ".")
 	switch len(tokens) {
 	case 1:
 		return PadStringStart(tokens[0], 12)

@@ -1,6 +1,7 @@
 package hive
 
 import (
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -75,25 +76,25 @@ func TruncateNumber(value float64, decimals int) string {
 func ShortNumber[T NumberType](value T, formatUnshort func(T) string) string {
 	if value >= 1000000000000 {
 		trillion := DivideNumber(float64(value), 1000000000000)
-		decimals := 1
-		if IsInteger(trillion) {
-			decimals = 0
+		decimals := 0
+		if HasDecimal(trillion) {
+			decimals = 1
 		}
 		return TruncateNumber(trillion, decimals) + "万亿"
 	}
 	if value >= 100000000 {
 		billion := DivideNumber(float64(value), 100000000)
-		decimals := 1
-		if IsInteger(billion) {
-			decimals = 0
+		decimals := 0
+		if HasDecimal(billion) {
+			decimals = 1
 		}
 		return TruncateNumber(billion, decimals) + "亿"
 	}
 	if value >= 10000 {
 		tenThousand := DivideNumber(float64(value), 10000)
-		decimals := 1
-		if IsInteger(tenThousand) {
-			decimals = 0
+		decimals := 0
+		if HasDecimal(tenThousand) {
+			decimals = 1
 		}
 		return TruncateNumber(tenThousand, decimals) + "万"
 	}
@@ -224,4 +225,13 @@ func ParseNumber(str string) (float64, error) {
 	}
 
 	return result, nil
+}
+
+// HasDecimal 数字是否包含小数部分
+func HasDecimal(value float64) bool {
+	// 先排除无效数字，它们既不是整数也没有小数
+	if math.IsNaN(value) || math.IsInf(value, 0) {
+		return false
+	}
+	return math.Mod(value, 1) != 0
 }

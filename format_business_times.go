@@ -5,23 +5,23 @@ import (
 	"strings"
 )
 
-func FormatHourMinutes(value int) string {
+func formatHourMinutes(value int) string {
 	hours := value / 60
 	minutes := value % 60
 	return fmt.Sprintf("%02d:%02d", hours, minutes)
 }
 
 // FormatBusinessTimes 营业时间时段范围为 [0, 2880] 可跨天, 0-1440 为当天，1440-2880 为次日
-func FormatBusinessTimes(businessTimes []int) string {
-	length := len(businessTimes)
+func FormatBusinessTimes(value []int) string {
+	length := len(value)
 	if length == 0 || length%2 != 0 {
 		return ""
 	}
 
 	var timeRanges []string
 	for i := 0; i < length; i += 2 {
-		start := businessTimes[i]
-		end := businessTimes[i+1]
+		start := value[i]
+		end := value[i+1]
 		startTime := start % 1440
 		endTime := end % 1440
 
@@ -31,12 +31,12 @@ func FormatBusinessTimes(businessTimes []int) string {
 			continue
 		}
 
-		startTimeStr := FormatHourMinutes(startTime)
+		startTimeStr := formatHourMinutes(startTime)
 		if start > 1440 {
 			startTimeStr = "次日" + startTimeStr
 		}
 
-		endTimeStr := FormatHourMinutes(endTime)
+		endTimeStr := formatHourMinutes(endTime)
 		if end > 1440 {
 			endTimeStr = "次日" + endTimeStr
 		}

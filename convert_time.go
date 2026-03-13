@@ -47,7 +47,3 @@ func TimestampToTime(timestamp int64) time.Time {
 	}
 	return time.UnixMilli(timestamp)
 }
-
-func StringToTime(str string, format string) (time.Time, error) {
-	return time.ParseInLocation(format, str, time.Local)
-}

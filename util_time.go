@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+func ParseTime(str string, format string) (time.Time, error) {
+	return time.ParseInLocation(format, str, time.Local)
+}
+
 // StartOfHour 获取某个小时开始时间
 func StartOfHour(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 0, 0, 0, t.Location())

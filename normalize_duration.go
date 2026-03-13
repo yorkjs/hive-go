@@ -9,17 +9,17 @@ type IDuration struct {
 	Seconds int
 }
 
-func NormalizeDuration(milliseconds int64) IDuration {
+func NormalizeDuration(value int64) IDuration {
 	result := IDuration{}
 
-	if milliseconds <= 0 {
+	if value <= 0 {
 		return result
 	}
 
-	seconds := math.Ceil(float64(milliseconds) / float64(MS_SECOND))
-	minutes := math.Floor(float64(milliseconds) / float64(MS_MINUTE))
-	hours := math.Floor(float64(milliseconds) / float64(MS_HOUR))
-	days := math.Floor(float64(milliseconds) / float64(MS_DAY))
+	seconds := math.Ceil(float64(value) / float64(MS_SECOND))
+	minutes := math.Floor(float64(value) / float64(MS_MINUTE))
+	hours := math.Floor(float64(value) / float64(MS_HOUR))
+	days := math.Floor(float64(value) / float64(MS_DAY))
 
 	if days > 0 {
 		result.Days = int(days)

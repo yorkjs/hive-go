@@ -122,7 +122,7 @@ func FormatArea(area IArea, options ...IFormatAreaOptions) string {
 	if area.Province != nil {
 		name := area.Province.Name
 		if simplify {
-			name = FormatProvince(name)
+			name = formatProvince(name)
 		}
 		appendItem(name)
 	}
@@ -130,7 +130,7 @@ func FormatArea(area IArea, options ...IFormatAreaOptions) string {
 	if area.City != nil {
 		item := area.City.Name
 		if simplify {
-			item = FormatCity(item)
+			item = formatCity(item)
 		}
 		if item != "" &&
 			item != "市辖区" &&
@@ -144,7 +144,7 @@ func FormatArea(area IArea, options ...IFormatAreaOptions) string {
 	if area.District != nil {
 		item := area.District.Name
 		if simplify {
-			item = FormatDistrict(item)
+			item = formatDistrict(item)
 		}
 		if item != "" {
 			appendItem(item)
@@ -163,7 +163,7 @@ func FormatArea(area IArea, options ...IFormatAreaOptions) string {
 	return strings.Join(list, separator)
 }
 
-func FormatProvince(name string) string {
+func formatProvince(name string) string {
 	if val, ok := provinceMap[name]; ok {
 		return val
 	}
@@ -190,7 +190,7 @@ func FormatProvince(name string) string {
 	return name
 }
 
-func FormatCity(name string) string {
+func formatCity(name string) string {
 	// 有时候会把港澳台放到城市这级显示
 	if after, ok := strings.CutPrefix(name, "中国"); ok {
 		name = after
@@ -212,7 +212,7 @@ func FormatCity(name string) string {
 	return name
 }
 
-func FormatDistrict(name string) string {
+func formatDistrict(name string) string {
 	if name == "市辖区" {
 		return ""
 	}
