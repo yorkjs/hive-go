@@ -16,13 +16,13 @@ func CalculateRate[T NumberType](value1, value2 T) int {
 // ApplyRateFloor 根据万分比计算数值，策略是向下取整
 // value: 原始数值
 // rate: 万分比比例
-func ApplyRateFloor[T NumberType](value T, rate int) int64 {
-	return int64(DivideNumber(float64(TimesNumber(value, T(rate))), 10000))
+func ApplyRateFloor[T NumberType](value T, rate int) T {
+	return T(math.Floor(DivideNumber(float64(TimesNumber(value, T(rate))), 10000)))
 }
 
 // ApplyRateCeil 根据万分比计算数值，策略是向上取整
 // value: 原始数值
 // rate: 万分比比例
-func ApplyRateCeil[T NumberType](value T, rate int) int64 {
-	return int64(math.Ceil(DivideNumber(float64(TimesNumber(value, T(rate))), 10000)))
+func ApplyRateCeil[T NumberType](value T, rate int) T {
+	return T(math.Ceil(DivideNumber(float64(TimesNumber(value, T(rate))), 10000)))
 }
