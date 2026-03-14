@@ -24,16 +24,30 @@ func TestRateUtils(t *testing.T) {
 	if got := CalculateRate(5, 10000); got != 5 {
 		t.Errorf("CalculateRate(5, 10000) = %v; want 5", got)
 	}
-	if got := ApplyRate(1000, 0); got != 0 {
-		t.Errorf("ApplyRate(1000, 0) = %v; want 0", got)
+
+	if got := ApplyRateFloor(1000, 0); got != 0 {
+		t.Errorf("ApplyRateFloor(1000, 0) = %v; want 0", got)
 	}
-	if got := ApplyRate(1000, 1000); got != 100 {
-		t.Errorf("ApplyRate(1000, 1000) = %v; want 100", got)
+	if got := ApplyRateFloor(1000, 1000); got != 100 {
+		t.Errorf("ApplyRateFloor(1000, 1000) = %v; want 100", got)
 	}
-	if got := ApplyRate(1000, 10000); got != 1000 {
-		t.Errorf("ApplyRate(1000, 10000) = %v; want 1000", got)
+	if got := ApplyRateFloor(1000, 10000); got != 1000 {
+		t.Errorf("ApplyRateFloor(1000, 10000) = %v; want 1000", got)
 	}
-	if got := ApplyRate(1000, 245); got != 24 {
-		t.Errorf("ApplyRate(1000, 245) = %v; want 24", got)
+	if got := ApplyRateFloor(1000, 245); got != 24 {
+		t.Errorf("ApplyRateFloor(1000, 245) = %v; want 24", got)
+	}
+
+	if got := ApplyRateCeil(1000, 0); got != 0 {
+		t.Errorf("ApplyRateCeil(1000, 0) = %v; want 0", got)
+	}
+	if got := ApplyRateCeil(1000, 1000); got != 100 {
+		t.Errorf("ApplyRateCeil(1000, 1000) = %v; want 100", got)
+	}
+	if got := ApplyRateCeil(1000, 10000); got != 1000 {
+		t.Errorf("ApplyRateCeil(1000, 10000) = %v; want 1000", got)
+	}
+	if got := ApplyRateCeil(1000, 245); got != 25 {
+		t.Errorf("ApplyRateCeil(1000, 245) = %v; want 25", got)
 	}
 }
