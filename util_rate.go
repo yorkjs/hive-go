@@ -26,3 +26,10 @@ func ApplyRateFloor[T NumberType](value T, rate int) T {
 func ApplyRateCeil[T NumberType](value T, rate int) T {
 	return T(math.Ceil(DivideNumber(float64(TimesNumber(value, T(rate))), 10000)))
 }
+
+// ApplyRateRound 根据万分比计算数值，策略是四舍五入
+// value: 原始数值
+// rate: 万分比比例
+func ApplyRateRound[T NumberType](value T, rate int) T {
+	return T(math.Round(DivideNumber(float64(TimesNumber(value, T(rate))), 10000)))
+}
