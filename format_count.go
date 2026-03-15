@@ -17,7 +17,7 @@ func FormatCountShortly[T IntegerType](value T, unit ...string) string {
 	if len(unit) > 0 {
 		u = unit[0]
 	}
-	return ShortNumber(
+	return shortNumber(
 		value,
 		func(v T) string {
 			return fmt.Sprintf("%v", v)

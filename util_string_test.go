@@ -228,7 +228,7 @@ func TestPadStringStart(t *testing.T) {
 	}
 }
 
-func TestHasSpecialCharacters(t *testing.T) {
+func TestHasSpecialCharacter(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -268,15 +268,15 @@ func TestHasSpecialCharacters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := HasSpecialCharacters(tt.input)
+			result := HasSpecialCharacter(tt.input)
 			if result != tt.expected {
-				t.Errorf("HasSpecialCharacters(%q) = %v, 期望 %v", tt.input, result, tt.expected)
+				t.Errorf("HasSpecialCharacter(%q) = %v, 期望 %v", tt.input, result, tt.expected)
 			}
 		})
 	}
 }
 
-func TestRemoveSpecialCharacters(t *testing.T) {
+func TestRemoveSpecialCharacter(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
@@ -321,9 +321,9 @@ func TestRemoveSpecialCharacters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := RemoveSpecialCharacters(tt.input)
+			result := RemoveSpecialCharacter(tt.input)
 			if result != tt.expected {
-				t.Errorf("RemoveSpecialCharacters(%q) = %q, 期望 %q", tt.input, result, tt.expected)
+				t.Errorf("RemoveSpecialCharacter(%q) = %q, 期望 %q", tt.input, result, tt.expected)
 			}
 		})
 	}

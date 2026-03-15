@@ -69,8 +69,8 @@ func DecodeUriComponent(str string) (string, error) {
 
 var httpProtocolPattern = regexp.MustCompile(`^https?://`)
 
-// NormalizeUrl 标准化 URL：确保包含协议部分
-func NormalizeUrl(urlStr string) string {
+// ToHttpProtocolUrl 标准化 URL：确保包含协议部分
+func ToHttpProtocolUrl(urlStr string) string {
 	if urlStr == "" {
 		return ""
 	}
@@ -86,8 +86,8 @@ func NormalizeUrl(urlStr string) string {
 	return "https://" + urlStr
 }
 
-// ToProtocolRelativeUrl 将 URL 转换为协议相对路径（以 // 开头）
-func ToProtocolRelativeUrl(urlStr string) string {
+// ToRelativeProtocolUrl 将 URL 转换为协议相对路径（以 // 开头）
+func ToRelativeProtocolUrl(urlStr string) string {
 	if urlStr == "" {
 		return ""
 	}

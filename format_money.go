@@ -24,7 +24,7 @@ func FormatAmountShortly[T IntegerType](value T, unit ...string) string {
 	if len(unit) > 0 {
 		u = unit[0]
 	}
-	return ShortNumber(
+	return shortNumber(
 		MoneyToDisplay(value),
 		func(v float64) string {
 			return TruncateNumber(float64(v), 2)

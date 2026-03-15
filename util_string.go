@@ -124,8 +124,8 @@ var (
 	specialCharacterPattern = regexp.MustCompile(`[^ \x{4e00}-\x{9fa5}a-zA-Z0-9，。、；：！“”‘’（）【】《》？～·—…\.,;:!?"'()\[\]{}<>@#&%￥$_\-]`)
 )
 
-// HasSpecialCharacters 判断字符串是否包含特殊字符
-func HasSpecialCharacters(str string) bool {
+// HasSpecialCharacter 判断字符串是否包含特殊字符
+func HasSpecialCharacter(str string) bool {
 	if str == "" {
 		return false
 	}
@@ -134,8 +134,8 @@ func HasSpecialCharacters(str string) bool {
 	return specialCharacterPattern.MatchString(str)
 }
 
-// RemoveSpecialCharacters 移除字符串中的特殊字符
-func RemoveSpecialCharacters(str string) string {
+// RemoveSpecialCharacter 移除字符串中的特殊字符
+func RemoveSpecialCharacter(str string) string {
 	if str == "" {
 		return ""
 	}

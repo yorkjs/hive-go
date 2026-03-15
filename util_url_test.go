@@ -18,7 +18,7 @@ func TestDecodeUriComponent(t *testing.T) {
 }
 
 // 更简洁的写法：使用匿名结构体
-func TestNormalizeUrl(t *testing.T) {
+func TestToHttpProtocolUrl(t *testing.T) {
 	testCases := []struct {
 		in  string
 		out string
@@ -31,15 +31,15 @@ func TestNormalizeUrl(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.in, func(t *testing.T) {
-			got := NormalizeUrl(tc.in)
+			got := ToHttpProtocolUrl(tc.in)
 			if got != tc.out {
-				t.Errorf("NormalizeUrl(%q) = %q; 期望 %q", tc.in, got, tc.out)
+				t.Errorf("ToHttpProtocolUrl(%q) = %q; 期望 %q", tc.in, got, tc.out)
 			}
 		})
 	}
 }
 
-func TestToProtocolRelativeUrl(t *testing.T) {
+func TestToRelativeProtocolUrl(t *testing.T) {
 	testCases := []struct {
 		in  string
 		out string
@@ -52,9 +52,9 @@ func TestToProtocolRelativeUrl(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.in, func(t *testing.T) {
-			got := ToProtocolRelativeUrl(tc.in)
+			got := ToRelativeProtocolUrl(tc.in)
 			if got != tc.out {
-				t.Errorf("ToProtocolRelativeUrl(%q) = %q; 期望 %q", tc.in, got, tc.out)
+				t.Errorf("ToRelativeProtocolUrl(%q) = %q; 期望 %q", tc.in, got, tc.out)
 			}
 		})
 	}

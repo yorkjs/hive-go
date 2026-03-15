@@ -44,15 +44,16 @@ func HexToRgbaObject(color string) (*IRgba, error) {
 	}
 
 	// 解析RGB值
-	red, err := strconv.ParseInt(hex[0:2], 16, 64)
+
+	red, err := ParseInteger(hex[0:2], 16)
 	if err != nil {
 		return nil, err
 	}
-	green, err := strconv.ParseInt(hex[2:4], 16, 64)
+	green, err := ParseInteger(hex[2:4], 16)
 	if err != nil {
 		return nil, err
 	}
-	blue, err := strconv.ParseInt(hex[4:6], 16, 64)
+	blue, err := ParseInteger(hex[4:6], 16)
 	if err != nil {
 		return nil, err
 	}
@@ -61,16 +62,16 @@ func HexToRgbaObject(color string) (*IRgba, error) {
 		Red:   int(red),
 		Green: int(green),
 		Blue:  int(blue),
-		Alpha: 1.0,
+		Alpha: 1,
 	}
 
 	// 解析透明度
 	if len(hex) == 8 {
-		alpha, err := strconv.ParseInt(hex[6:8], 16, 64)
+		alpha, err := ParseInteger(hex[6:8], 16)
 		if err != nil {
 			return nil, err
 		}
-		result.Alpha = float64(alpha) / 255.0
+		result.Alpha = float64(alpha) / 255
 	}
 
 	return result, nil
@@ -210,7 +211,7 @@ func HslToRgb(hsl *IHsl) *IRgba {
 		Red:   int(math.Round(r * 255.0)),
 		Green: int(math.Round(g * 255.0)),
 		Blue:  int(math.Round(b * 255.0)),
-		Alpha: 1.0,
+		Alpha: 1,
 	}
 }
 
@@ -237,5 +238,5 @@ func hue2rgb(p, q, t float64) float64 {
 
 // toHex 将颜色值转换为十六进制字符串
 func toHex(color int) string {
-	return PadStringStart(strconv.FormatInt(int64(color), 16), 2)
+	return PadStringStart(strings.ToUpper(strconv.FormatInt(int64(color), 16)), 2)
 }
