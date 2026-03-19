@@ -33,10 +33,10 @@ func RandomIntegerByRange[T IntegerType](min, max T) T {
 }
 
 // RandomStringByLength 生成指定长度的随机字符串
-func RandomStringByLength(length int, chars ...string) string {
-	charSet := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-	if len(chars) > 0 && chars[0] != "" {
-		charSet = chars[0]
+func RandomStringByLength(length int, charset ...string) string {
+	charSet := RANDOM_CHARSET_ALPHA_NUMERIC
+	if len(charset) > 0 && charset[0] != "" {
+		charSet = charset[0]
 	}
 
 	result := make([]byte, length)
