@@ -245,6 +245,21 @@ func TestHasSpecialCharacter(t *testing.T) {
 			expected: true,
 		},
 		{
+			name:     "包含/",
+			input:    "炸鸡风味瓜子/原味鸡风味花生二选一",
+			expected: false,
+		},
+		{
+			name:     "包含+",
+			input:    "老北京鸡肉卷+吮指原味鸡",
+			expected: false,
+		},
+		{
+			name:     "包含-",
+			input:    "老北京鸡肉卷-吮指原味鸡",
+			expected: false,
+		},
+		{
 			name:     "包含表情符号",
 			input:    "abc,123.☺️",
 			expected: true,
