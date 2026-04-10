@@ -270,6 +270,11 @@ func TestHasSpecialCharacter(t *testing.T) {
 			expected: false,
 		},
 		{
+			name:     "包含π",
+			input:    "茶π",
+			expected: false,
+		},
+		{
 			name:     "普通文本包含空格",
 			input:    " abc,  123. ",
 			expected: false,
@@ -329,8 +334,8 @@ func TestRemoveSpecialCharacter(t *testing.T) {
 		},
 		{
 			name:     "只包含特殊字符",
-			input:    "@#$%^&*",
-			expected: "@#$%&*",
+			input:    "@#$%^&*π",
+			expected: "@#$%&*π",
 		},
 		{
 			name:     "混合允许和不允许字符",
