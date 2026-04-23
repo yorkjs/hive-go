@@ -31,7 +31,7 @@ func HexToRgbaObject(color string) (*IRgba, error) {
 
 	// 处理简写格式 (#rgb 或 #rgba)
 	if len(hex) == 3 || len(hex) == 4 {
-		newHex := ""
+		var newHex string
 		for _, char := range hex {
 			newHex += string(char) + string(char)
 		}
