@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -131,7 +132,12 @@ func HasSpecialCharacter(str string) bool {
 	}
 
 	// 查找是否包含不允许的字符
-	return specialCharacterPattern.MatchString(str)
+	for _, r := range str {
+		if !isAllowedCharacter(r) {
+			return true
+		}
+	}
+	return false
 }
 
 // RemoveSpecialCharacter 移除字符串中的特殊字符
@@ -140,6 +146,39 @@ func RemoveSpecialCharacter(str string) string {
 		return ""
 	}
 
-	// 移除所有不允许的字符
-	return specialCharacterPattern.ReplaceAllString(str, "")
+	var builder strings.Builder
+	builder.Grow(len(str))
+
+	for _, r := range str {
+		if isAllowedCharacter(r) {
+			builder.WriteRune(r)
+		}
+	}
+
+	return builder.String()
+}
+
+func isAllowedCharacter(r rune) bool {
+	// 直接禁止的控制字符和特定符号
+	if unicode.IsControl(r) {
+		return false
+	}
+
+	// 允许的 Unicode 类别
+	switch {
+	case unicode.IsLetter(r): // 字母
+		return true
+	case unicode.IsNumber(r): // 数字
+		return true
+	case r == ' ': // 普通空格
+		return true
+	case unicode.IsPunct(r): // 标点符号 .,!?:;"'()[]{} 等
+		return true
+	case unicode.Is(unicode.Sm, r): // 数学符号 + - × ÷ = < > 等
+		return true
+	case unicode.Is(unicode.Sc, r): // 货币符号 $ € £ ¥
+		return true
+	default:
+		return false
+	}
 }
