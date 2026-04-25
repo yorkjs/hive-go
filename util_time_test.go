@@ -387,6 +387,143 @@ func TestTimeMonth(t *testing.T) {
 	}
 }
 
+func TestStartOfYear(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通年份",
+			now:  time.Date(2026, 4, 15, 10, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年",
+			now:  time.Date(2024, 2, 29, 14, 20, 0, 0, time.Local),
+			want: time.Date(2024, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "跨世纪",
+			now:  time.Date(2000, 12, 31, 23, 59, 59, 999999999, time.UTC),
+			want: time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := StartOfYear(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("StartOfYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStartOfPrevYear(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通年份",
+			now:  time.Date(2026, 4, 15, 10, 30, 45, 123456789, time.Local),
+			want: time.Date(2025, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "年初",
+			now:  time.Date(2026, 1, 1, 0, 0, 0, 0, time.Local),
+			want: time.Date(2025, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年",
+			now:  time.Date(2024, 2, 29, 14, 20, 0, 0, time.Local),
+			want: time.Date(2023, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := StartOfPrevYear(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("StartOfPrevYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStartOfNextYear(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通年份",
+			now:  time.Date(2026, 4, 15, 10, 30, 45, 123456789, time.Local),
+			want: time.Date(2027, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "年末",
+			now:  time.Date(2026, 12, 31, 23, 59, 59, 999999999, time.Local),
+			want: time.Date(2027, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年",
+			now:  time.Date(2024, 2, 29, 14, 20, 0, 0, time.Local),
+			want: time.Date(2025, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := StartOfNextYear(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("StartOfNextYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEndOfYear(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通年份",
+			now:  time.Date(2026, 4, 15, 10, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 12, 31, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "闰年",
+			now:  time.Date(2024, 2, 29, 14, 20, 0, 0, time.Local),
+			want: time.Date(2024, 12, 31, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "年末",
+			now:  time.Date(2026, 12, 31, 0, 0, 0, 0, time.Local),
+			want: time.Date(2026, 12, 31, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "跨世纪",
+			now:  time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
+			want: time.Date(2000, 12, 31, 23, 59, 59, 999000000, time.UTC),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := EndOfYear(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("EndOfYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSameOfPrevDay(t *testing.T) {
 	tests := []struct {
 		name string

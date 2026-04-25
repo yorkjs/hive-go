@@ -101,6 +101,26 @@ func EndOfMonth(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month()+1, 0, 23, 59, 59, 999000000, t.Location())
 }
 
+// StartOfYear 获取某年的开始时间
+func StartOfYear(t time.Time) time.Time {
+	return time.Date(t.Year(), 1, 1, 0, 0, 0, 0, t.Location())
+}
+
+// StartOfPrevYear 获取前一年的开始时间
+func StartOfPrevYear(t time.Time) time.Time {
+	return time.Date(t.Year()-1, 1, 1, 0, 0, 0, 0, t.Location())
+}
+
+// StartOfNextYear 获取下一年的开始时间
+func StartOfNextYear(t time.Time) time.Time {
+	return time.Date(t.Year()+1, 1, 1, 0, 0, 0, 0, t.Location())
+}
+
+// EndOfYear 获取某年的结束时间
+func EndOfYear(t time.Time) time.Time {
+	return time.Date(t.Year(), 12, 31, 23, 59, 59, 999000000, t.Location())
+}
+
 // SameOfPrevDay 获取昨天的同时刻
 func SameOfPrevDay(t time.Time) time.Time {
 	return t.AddDate(0, 0, -1)
