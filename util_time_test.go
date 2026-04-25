@@ -387,6 +387,238 @@ func TestTimeMonth(t *testing.T) {
 	}
 }
 
+func TestSameOfPrevDay(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通日期",
+			now:  time.Date(2026, 4, 27, 15, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 4, 26, 15, 30, 45, 123456789, time.Local),
+		},
+		{
+			name: "跨月边界-月初",
+			now:  time.Date(2026, 5, 1, 10, 0, 0, 0, time.Local),
+			want: time.Date(2026, 4, 30, 10, 0, 0, 0, time.Local),
+		},
+		{
+			name: "跨年边界-元旦",
+			now:  time.Date(2026, 1, 1, 8, 30, 0, 0, time.Local),
+			want: time.Date(2025, 12, 31, 8, 30, 0, 0, time.Local),
+		},
+		{
+			name: "闰年边界-3月1日",
+			now:  time.Date(2024, 3, 1, 12, 0, 0, 0, time.Local),
+			want: time.Date(2024, 2, 29, 12, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年边界-非闰年3月1日",
+			now:  time.Date(2023, 3, 1, 12, 0, 0, 0, time.Local),
+			want: time.Date(2023, 2, 28, 12, 0, 0, 0, time.Local),
+		},
+		{
+			name: "包含纳秒",
+			now:  time.Date(2026, 12, 31, 23, 59, 59, 999999999, time.UTC),
+			want: time.Date(2026, 12, 30, 23, 59, 59, 999999999, time.UTC),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SameOfPrevDay(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("SameOfPrevDay() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSameOfPrevWeek(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通日期",
+			now:  time.Date(2026, 4, 27, 15, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 4, 20, 15, 30, 45, 123456789, time.Local),
+		},
+		{
+			name: "跨月边界",
+			now:  time.Date(2026, 4, 5, 10, 0, 0, 0, time.Local),
+			want: time.Date(2026, 3, 29, 10, 0, 0, 0, time.Local),
+		},
+		{
+			name: "跨年边界",
+			now:  time.Date(2026, 1, 10, 8, 30, 0, 0, time.Local),
+			want: time.Date(2026, 1, 3, 8, 30, 0, 0, time.Local),
+		},
+		{
+			name: "跨年边界-年初",
+			now:  time.Date(2026, 1, 5, 12, 0, 0, 0, time.Local),
+			want: time.Date(2025, 12, 29, 12, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年边界",
+			now:  time.Date(2024, 3, 7, 14, 20, 0, 0, time.Local),
+			want: time.Date(2024, 2, 29, 14, 20, 0, 0, time.Local),
+		},
+		{
+			name: "包含纳秒",
+			now:  time.Date(2026, 12, 31, 23, 59, 59, 999999999, time.UTC),
+			want: time.Date(2026, 12, 24, 23, 59, 59, 999999999, time.UTC),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SameOfPrevWeek(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("SameOfPrevWeek() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSameOfPrevMonth(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通日期-月中",
+			now:  time.Date(2026, 4, 15, 15, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 3, 15, 15, 30, 45, 123456789, time.Local),
+		},
+		{
+			name: "月末-上个月有31天",
+			now:  time.Date(2026, 4, 30, 10, 0, 0, 0, time.Local),
+			want: time.Date(2026, 3, 30, 10, 0, 0, 0, time.Local),
+		},
+		{
+			name: "月末-上个月有30天",
+			now:  time.Date(2026, 5, 31, 12, 0, 0, 0, time.Local),
+			want: time.Date(2026, 4, 30, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "月末-上个月是二月非闰年28天",
+			now:  time.Date(2026, 3, 31, 8, 30, 0, 0, time.Local),
+			want: time.Date(2026, 2, 28, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "月末-上个月是二月闰年29天",
+			now:  time.Date(2024, 3, 31, 14, 20, 0, 0, time.Local),
+			want: time.Date(2024, 2, 29, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "月初-1号",
+			now:  time.Date(2026, 4, 1, 9, 15, 0, 0, time.Local),
+			want: time.Date(2026, 3, 1, 9, 15, 0, 0, time.Local),
+		},
+		{
+			name: "跨年-1月",
+			now:  time.Date(2026, 1, 15, 20, 30, 0, 0, time.Local),
+			want: time.Date(2025, 12, 15, 20, 30, 0, 0, time.Local),
+		},
+		{
+			name: "跨年-1月31日",
+			now:  time.Date(2026, 1, 31, 22, 45, 0, 0, time.Local),
+			want: time.Date(2025, 12, 31, 22, 45, 0, 0, time.Local),
+		},
+		{
+			name: "包含纳秒",
+			now:  time.Date(2026, 6, 30, 15, 30, 45, 123456789, time.Local),
+			want: time.Date(2026, 5, 30, 15, 30, 45, 123456789, time.Local),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SameOfPrevMonth(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("SameOfPrevMonth() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSameOfPrevYear(t *testing.T) {
+	tests := []struct {
+		name string
+		now  time.Time
+		want time.Time
+	}{
+		{
+			name: "普通日期",
+			now:  time.Date(2026, 4, 15, 15, 30, 45, 123456789, time.Local),
+			want: time.Date(2025, 4, 15, 15, 30, 45, 123456789, time.Local),
+		},
+		{
+			name: "闰年2月29日-去年是闰年",
+			now:  time.Date(2024, 2, 29, 10, 0, 0, 0, time.Local),
+			want: time.Date(2023, 2, 28, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "闰年2月29日-去年是闰年但今年不是",
+			now:  time.Date(2020, 2, 29, 14, 30, 0, 0, time.Local),
+			want: time.Date(2019, 2, 28, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "闰年2月28日-去年是闰年",
+			now:  time.Date(2024, 2, 28, 12, 0, 0, 0, time.Local),
+			want: time.Date(2023, 2, 28, 12, 0, 0, 0, time.Local),
+		},
+		{
+			name: "闰年3月1日-去年是闰年",
+			now:  time.Date(2024, 3, 1, 8, 30, 0, 0, time.Local),
+			want: time.Date(2023, 3, 1, 8, 30, 0, 0, time.Local),
+		},
+		{
+			name: "闰年2月29日-去年是闰年但从闰年跨闰年",
+			now:  time.Date(2024, 2, 29, 20, 15, 0, 0, time.Local),
+			want: time.Date(2023, 2, 28, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "平年2月28日-去年是平年",
+			now:  time.Date(2023, 2, 28, 9, 0, 0, 0, time.Local),
+			want: time.Date(2022, 2, 28, 9, 0, 0, 0, time.Local),
+		},
+		{
+			name: "跨世纪-2000年闰年",
+			now:  time.Date(2000, 2, 29, 13, 45, 0, 0, time.Local),
+			want: time.Date(1999, 2, 28, 23, 59, 59, 999000000, time.Local),
+		},
+		{
+			name: "12月31日",
+			now:  time.Date(2026, 12, 31, 23, 59, 59, 0, time.Local),
+			want: time.Date(2025, 12, 31, 23, 59, 59, 0, time.Local),
+		},
+		{
+			name: "1月1日",
+			now:  time.Date(2026, 1, 1, 0, 0, 0, 0, time.Local),
+			want: time.Date(2025, 1, 1, 0, 0, 0, 0, time.Local),
+		},
+		{
+			name: "包含纳秒",
+			now:  time.Date(2026, 6, 15, 12, 30, 45, 123456789, time.UTC),
+			want: time.Date(2025, 6, 15, 12, 30, 45, 123456789, time.UTC),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SameOfPrevYear(tt.now)
+			if !got.Equal(tt.want) {
+				t.Errorf("SameOfPrevYear() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestTimeOptimizeTimeRange(t *testing.T) {
 	loc := time.Local
 

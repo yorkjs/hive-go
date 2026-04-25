@@ -101,6 +101,78 @@ func EndOfMonth(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month()+1, 0, 23, 59, 59, 999000000, t.Location())
 }
 
+// SameOfPrevDay 获取昨天的同时刻
+func SameOfPrevDay(t time.Time) time.Time {
+	return t.AddDate(0, 0, -1)
+}
+
+// SameOfPrevWeek 获取前一周的同时刻
+func SameOfPrevWeek(t time.Time) time.Time {
+	return t.AddDate(0, 0, -7)
+}
+
+// SameOfPrevMonth 获取上个月同时刻
+func SameOfPrevMonth(t time.Time) time.Time {
+
+	day := t.Day()
+
+	prevMonthStart := StartOfPrevMonth(t)
+	prevMonthEnd := EndOfMonth(prevMonthStart)
+
+	// 如果当前日期大于上个月的最后一天，则使用上个月的最后一天
+	if day > prevMonthEnd.Day() {
+		return prevMonthEnd
+	}
+
+	// 构建上个月同时刻的时间
+	return time.Date(
+		prevMonthStart.Year(),
+		prevMonthStart.Month(),
+		day,
+		t.Hour(),
+		t.Minute(),
+		t.Second(),
+		t.Nanosecond(),
+		t.Location(),
+	)
+}
+
+// SameOfPrevYear 获取去年的同时刻
+func SameOfPrevYear(t time.Time) time.Time {
+
+	// 获取当前日期
+	month := t.Month()
+	day := t.Day()
+
+	// 计算去年的同月同日
+	prevYearMonthStart := time.Date(
+		t.Year()-1,
+		month,
+		1,
+		0, 0, 0, 0,
+		t.Location(),
+	)
+
+	prevYearMonthEnd := EndOfMonth(prevYearMonthStart)
+
+	// 如果当前日期大于去年该月的最后一天，则使用该月的最后一天
+	if day > prevYearMonthEnd.Day() {
+		return prevYearMonthEnd
+	}
+
+	// 构建去年同时刻的时间
+	return time.Date(
+		t.Year()-1,
+		month,
+		day,
+		t.Hour(),
+		t.Minute(),
+		t.Second(),
+		t.Nanosecond(),
+		t.Location(),
+	)
+}
+
 type ITimeRangeOptimizer struct {
 	IsHour  func(hour time.Time)
 	IsDay   func(day time.Time)
