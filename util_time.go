@@ -193,6 +193,29 @@ func SameOfPrevYear(t time.Time) time.Time {
 	)
 }
 
+// MatchMinuteSegments 判断目标时间是否落在给定的分钟段区间内（左闭右开）
+func MatchMinuteSegments(segments []int, target time.Time) bool {
+	length := len(segments)
+	if length == 0 || length%2 != 0 {
+		return false
+	}
+
+	firstValue := TimeToMinuteSegment(target) // 当日分钟数
+	secondValue := firstValue + 24*60         // 次日分钟数（偏移一天）
+
+	for i := 0; i < length; i += 2 {
+		startTime := segments[i]
+		endTime := segments[i+1]
+		if firstValue >= startTime && firstValue < endTime {
+			return true
+		}
+		if secondValue >= startTime && secondValue < endTime {
+			return true
+		}
+	}
+	return false
+}
+
 type ITimeRangeOptimizer struct {
 	IsHour  func(hour time.Time)
 	IsDay   func(day time.Time)

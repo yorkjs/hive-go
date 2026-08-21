@@ -30,4 +30,36 @@ func TestTimeConvert(t *testing.T) {
 		t.Errorf("timestampToTime 失败: 期望 %v, 得到 %v", true, false)
 	}
 
+	t1 := TimeFieldToTime(ITimeField{
+		Year:  2025,
+		Month: 5,
+		Date:  5,
+	})
+	if TimeToMinuteSegment(t1) != 0 {
+		t.Errorf("timeToMinuteSegment 失败: 期望 %d, 得到 %d", 0, TimeToMinuteSegment(t1))
+	}
+
+	t2 := TimeFieldToTime(ITimeField{
+		Year:   2025,
+		Month:  5,
+		Date:   5,
+		Hour:   10,
+		Minute: 1,
+	})
+	if TimeToMinuteSegment(t2) != 601 {
+		t.Errorf("timeToMinuteSegment 失败: 期望 %d, 得到 %d", 601, TimeToMinuteSegment(t2))
+	}
+
+	t3 := TimeFieldToTime(ITimeField{
+		Year:   2025,
+		Month:  5,
+		Date:   5,
+		Hour:   23,
+		Minute: 59,
+		Second: 59,
+	})
+	if TimeToMinuteSegment(t3) != 1439 {
+		t.Errorf("timeToMinuteSegment 失败: 期望 %d, 得到 %d", 1439, TimeToMinuteSegment(t3))
+	}
+
 }

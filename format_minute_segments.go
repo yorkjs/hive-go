@@ -5,14 +5,19 @@ import (
 	"strings"
 )
 
-func formatHourMinutes(value int) string {
+func formatMinuteSegment(value int) string {
 	hours := value / 60
 	minutes := value % 60
 	return fmt.Sprintf("%02d:%02d", hours, minutes)
 }
 
-// FormatBusinessTimes 营业时间时段范围为 [0, 2880] 可跨天, 0-1440 为当天，1440-2880 为次日
-func FormatBusinessTimes(value []int) string {
+// FormatMinuteSegments 分钟段范围为 [0, 2880] 可跨天, 0-1440 为当天，1440-2880 为次日
+func FormatMinuteSegments(value []int, separator ...string) string {
+	sep := "、"
+	if len(separator) > 0 {
+		sep = separator[0]
+	}
+
 	length := len(value)
 	if length == 0 || length%2 != 0 {
 		return ""
@@ -31,12 +36,12 @@ func FormatBusinessTimes(value []int) string {
 			continue
 		}
 
-		startTimeStr := formatHourMinutes(startTime)
+		startTimeStr := formatMinuteSegment(startTime)
 		if start > 1440 {
 			startTimeStr = "次日" + startTimeStr
 		}
 
-		endTimeStr := formatHourMinutes(endTime)
+		endTimeStr := formatMinuteSegment(endTime)
 		if end > 1440 {
 			endTimeStr = "次日" + endTimeStr
 		}
@@ -44,5 +49,5 @@ func FormatBusinessTimes(value []int) string {
 		timeRanges = append(timeRanges, fmt.Sprintf("%s-%s", startTimeStr, endTimeStr))
 	}
 
-	return strings.Join(timeRanges, "、")
+	return strings.Join(timeRanges, sep)
 }

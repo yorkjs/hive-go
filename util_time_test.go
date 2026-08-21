@@ -756,6 +756,31 @@ func TestSameOfPrevYear(t *testing.T) {
 	}
 }
 
+func TestMatchMinuteSegments(t *testing.T) {
+	// 第一个用例
+	date := time.Date(2025, 10, 10, 10, 1, 1, 0, time.UTC)
+	if !MatchMinuteSegments([]int{500, 650}, date) {
+		t.Error("expected true for [500,650] at 10:01")
+	}
+	if MatchMinuteSegments([]int{500, 550}, date) {
+		t.Error("expected false for [500,550]")
+	}
+	if MatchMinuteSegments([]int{650, 700}, date) {
+		t.Error("expected false for [650,700]")
+	}
+
+	date2 := time.Date(2025, 3, 31, 1, 1, 1, 0, time.UTC)
+	if !MatchMinuteSegments([]int{1320, 1560}, date2) {
+		t.Error("expected true for [1320,1560] at 01:01")
+	}
+	if MatchMinuteSegments([]int{1320, 1440}, date2) {
+		t.Error("expected false for [1320,1440]")
+	}
+	if MatchMinuteSegments([]int{1560, 1600}, date2) {
+		t.Error("expected false for [1560,1600]")
+	}
+}
+
 func TestTimeOptimizeTimeRange(t *testing.T) {
 	loc := time.Local
 

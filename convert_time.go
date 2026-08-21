@@ -47,3 +47,10 @@ func TimestampToTime(timestamp int64) time.Time {
 	}
 	return time.UnixMilli(timestamp)
 }
+
+// TimeToMinuteSegment 返回给定时间在当天从 0 点开始的分钟数（0 ~ 1439）
+func TimeToMinuteSegment(t time.Time) int {
+	hours := t.Hour()
+	minutes := t.Minute()
+	return hours*60 + minutes
+}

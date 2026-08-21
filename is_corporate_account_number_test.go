@@ -11,7 +11,8 @@ func TestIsCorporateAccountNumber(t *testing.T) {
 		{"empty string", "", false},
 		{"single digit", "1", false},
 		{"two digits", "12", false},
-		{"too long", "6228480012123123123123123345678", false},
+		{"too long", "6228480012123123123123123345678", true},
+		{"too long", "62284800121231231231231233456789222222222222", false},
 		{"valid 13 digits", "1234567890123", true},
 		{"non-numeric characters", "asdasdasdasd", false},
 	}
