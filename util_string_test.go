@@ -1,6 +1,9 @@
 package hive
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestGetStringLength(t *testing.T) {
 	tests := []struct {
@@ -204,7 +207,12 @@ func TestRenderStringTemplate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := RenderStringTemplate(tt.template, tt.data)
+			result := RenderStringTemplate(tt.template, func(key, match string) string {
+				if value, ok := tt.data[key]; ok && value != nil {
+					return fmt.Sprintf("%v", value)
+				}
+				return match
+			})
 			if result != tt.expected {
 				t.Errorf("RenderStringTemplate(%q, %v) = %q, want %q",
 					tt.template, tt.data, result, tt.expected)

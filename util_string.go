@@ -1,7 +1,6 @@
 package hive
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 	"unicode"
@@ -89,26 +88,16 @@ func TruncateString(str string, maxLength int) string {
 
 // RenderStringTemplate 渲染字符串模板
 // str: 字符串模板，例如：'你好，${name}'
-// data: 数据对象，例如：map[string]interface{}{"name": "张三"}
+// replace: 替换函数，用于把插值的 key 转成对应的 value
 // 返回渲染后的字符串，例如：'你好，张三'
-func RenderStringTemplate(str string, data map[string]interface{}) string {
+func RenderStringTemplate(str string, replace func(key, match string) string) string {
+	pattern := regexp.MustCompile(`\${(.*?)}`)
 	// 编译正则表达式
-	re := regexp.MustCompile(`\${(.*?)}`)
-	return re.ReplaceAllStringFunc(str, func(match string) string {
+	return pattern.ReplaceAllStringFunc(str, func(match string) string {
 		// 提取变量名（去掉 ${ 和 }）
 		key := match[2 : len(match)-1]
 		// 去除两端空白
-		key = TrimString(key)
-
-		// 获取对应的值
-		value, ok := data[key]
-		if value == nil || !ok {
-			// 如果找不到对应的值，返回原字符串
-			return match
-		}
-
-		// 将值转换为字符串
-		return fmt.Sprintf("%v", value)
+		return replace(TrimString(key), match)
 	})
 }
 
