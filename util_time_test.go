@@ -168,6 +168,27 @@ func TestTimeParse(t *testing.T) {
 
 }
 
+func TestTimeMinute(t *testing.T) {
+	loc := time.Local
+
+	// 2020-10-10 10:01:01
+	date := time.Date(2020, 10, 10, 10, 1, 1, 0, loc)
+
+	if got := FormatDateTime(StartOfMinute(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:01:00" {
+		t.Errorf("StartOfMinute(2020-10-10) = %v; want 2020-10-10 10:01:00", got)
+	}
+	if got := FormatDateTime(StartOfPrevMinute(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:00:00" {
+		t.Errorf("StartOfPrevMinute(2020-10-10) = %v; want 2020-10-10 10:00:00", got)
+	}
+	if got := FormatDateTime(StartOfNextMinute(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:02:00" {
+		t.Errorf("StartOfNextMinute(2020-10-10) = %v; want 2020-10-10 10:02:00", got)
+	}
+	if got := FormatDateTime(EndOfMinute(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2020-10-10 10:01:59" {
+		t.Errorf("EndOfMinute(2020-10-10) = %v; want 2020-10-10 10:01:59", got)
+	}
+
+}
+
 func TestTimeHour(t *testing.T) {
 	loc := time.Local
 

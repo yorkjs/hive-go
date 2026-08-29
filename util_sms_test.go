@@ -80,11 +80,11 @@ func TestCalculateSmsCount(t *testing.T) {
 		{
 			name:            "英文和中文都按一个字符计算",
 			signatureName:   "签名",
-			templateContent: "Hello你好",
+			templateContent: "Hello你好😀😀",
 			perSmsCharCount: 10,
-			// Hello=5，你好=2，签名=2，两个括号=2
-			// 总计 5 + 2 + 2 + 2 = 11
-			wantCharCount: 11,
+			// Hello=5，你好=2，😀😀=2，签名=2，两个括号=2
+			// 总计 5 + 2 + 2 + 2 + 2 = 13
+			wantCharCount: 13,
 			wantSmsCount:  2,
 		},
 		{

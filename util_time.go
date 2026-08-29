@@ -8,6 +8,26 @@ func ParseTime(str string, format string) (time.Time, error) {
 	return time.ParseInLocation(format, str, time.Local)
 }
 
+// StartOfMinute 获取某个分钟开始时间（秒和纳秒归零）
+func StartOfMinute(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), 0, 0, t.Location())
+}
+
+// StartOfPrevMinute 获取前一分钟开始时间
+func StartOfPrevMinute(t time.Time) time.Time {
+	return StartOfMinute(t.Add(-1 * time.Minute))
+}
+
+// StartOfNextMinute 获取下一分钟开始时间
+func StartOfNextMinute(t time.Time) time.Time {
+	return StartOfMinute(t.Add(time.Minute))
+}
+
+// EndOfMinute 获取某个分钟结束时间（秒=59，纳秒=999000000，与小时版保持一致）
+func EndOfMinute(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), 59, 999000000, t.Location())
+}
+
 // StartOfHour 获取某个小时开始时间
 func StartOfHour(t time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), 0, 0, 0, t.Location())
