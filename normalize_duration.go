@@ -9,6 +9,7 @@ type IDuration struct {
 	Seconds int
 }
 
+// value 毫秒
 func NormalizeDuration(value int64) IDuration {
 	result := IDuration{}
 

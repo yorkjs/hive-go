@@ -78,10 +78,16 @@ func TestFormatDateTime(t *testing.T) {
 	}
 
 	// FormatDateTimeRange
-	// '2020-10-01 10:01 至 2020-10-01 10:03'
+	// '2020-10-01 10:01 至 2020-10-02 10:03'
 	tStart := time.Date(2020, 10, 1, 10, 1, 2, 0, time.Local)
-	tEnd := time.Date(2020, 10, 1, 10, 3, 2, 0, time.Local)
-	if got := FormatDateTimeRange(tStart, tEnd); got != "2020-10-01 10:01 至 2020-10-01 10:03" {
-		t.Errorf("FormatDateTimeRange(...) = %q; want \"2020-10-01 10:01 至 2020-10-01 10:03\"", got)
+	tEnd := time.Date(2020, 10, 2, 10, 3, 2, 0, time.Local)
+	if got := FormatDateTimeRange(tStart, tEnd); got != "2020-10-01 10:01 至 2020-10-02 10:03" {
+		t.Errorf("FormatDateTimeRange(...) = %q; want \"2020-10-01 10:01 至 2020-10-02 10:03\"", got)
+	}
+
+	tStart = time.Date(2020, 10, 1, 10, 1, 2, 0, time.Local)
+	tEnd = time.Date(2020, 10, 1, 10, 3, 2, 0, time.Local)
+	if got := FormatDateTimeRange(tStart, tEnd); got != "2020-10-01 10:01 至 10:03" {
+		t.Errorf("FormatDateTimeRange(...) = %q; want \"2020-10-01 10:01 至 10:03\"", got)
 	}
 }
