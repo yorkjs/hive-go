@@ -11,37 +11,57 @@ import (
 )
 
 // PlusNumber 精确加法，比如 PlusNumber(3, 1) === 4
-func PlusNumber[T NumberType](value1, value2 T) T {
-	d1 := decimal.NewFromFloat(float64(value1))
-	d2 := decimal.NewFromFloat(float64(value2))
-	f, _ := d1.Add(d2).Float64()
+func PlusNumber[T NumberType](values ...T) T {
+	if len(values) == 0 {
+		return T(0)
+	}
+	d := decimal.NewFromFloat(float64(values[0]))
+	for _, v := range values[1:] {
+		d = d.Add(decimal.NewFromFloat(float64(v)))
+	}
+	f, _ := d.Float64()
 	return T(f)
 }
 
 // MinusNumber 精确减法，比如 MinusNumber(3, 1) === 2
-func MinusNumber[T NumberType](value1, value2 T) T {
-	d1 := decimal.NewFromFloat(float64(value1))
-	d2 := decimal.NewFromFloat(float64(value2))
-	f, _ := d1.Sub(d2).Float64()
+func MinusNumber[T NumberType](values ...T) T {
+	if len(values) == 0 {
+		panic("MinusNumber requires at least one argument")
+	}
+	d := decimal.NewFromFloat(float64(values[0]))
+	for _, v := range values[1:] {
+		d = d.Sub(decimal.NewFromFloat(float64(v)))
+	}
+	f, _ := d.Float64()
 	return T(f)
 }
 
 // TimesNumber 精确乘法，比如 TimesNumber(3, 2) === 6
-func TimesNumber[T NumberType](value1, value2 T) T {
-	d1 := decimal.NewFromFloat(float64(value1))
-	d2 := decimal.NewFromFloat(float64(value2))
-	f, _ := d1.Mul(d2).Float64()
+func TimesNumber[T NumberType](values ...T) T {
+	if len(values) == 0 {
+		return T(1)
+	}
+	d := decimal.NewFromFloat(float64(values[0]))
+	for _, v := range values[1:] {
+		d = d.Mul(decimal.NewFromFloat(float64(v)))
+	}
+	f, _ := d.Float64()
 	return T(f)
 }
 
 // DivideNumber 精确除法，比如 DivideNumber(6, 2) === 3
-func DivideNumber[T NumberType](value1, value2 T) T {
-	if value2 == 0 {
-		panic("Divisor cannot be zero")
+func DivideNumber[T NumberType](values ...T) T {
+	if len(values) == 0 {
+		panic("DivideNumber requires at least one argument")
 	}
-	d1 := decimal.NewFromFloat(float64(value1))
-	d2 := decimal.NewFromFloat(float64(value2))
-	f, _ := d1.Div(d2).Float64()
+	d := decimal.NewFromFloat(float64(values[0]))
+	for _, v := range values[1:] {
+		if v == 0 {
+			panic("Divisor cannot be zero")
+		}
+		d = d.Div(decimal.NewFromFloat(float64(v)))
+	}
+	f, _ := d.Float64()
 	return T(f)
 }
 

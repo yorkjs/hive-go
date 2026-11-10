@@ -406,6 +406,21 @@ func TestTimeMonth(t *testing.T) {
 	if got := FormatDateTime(EndOfMonth(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2025-01-31 23:59:59" {
 		t.Errorf("EndOfMonth(2025-01-19) = %v; want 2025-01-31 23:59:59", got)
 	}
+
+	// 2025-01-31 10:01:01
+	date = time.Date(2025, 1, 31, 10, 1, 1, 0, loc)
+	if got := FormatDateTime(StartOfMonth(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2025-01-01 00:00:00" {
+		t.Errorf("StartOfMonth(2025-01-19) = %v; want 2025-01-01 00:00:00", got)
+	}
+	if got := FormatDateTime(StartOfPrevMonth(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2024-12-01 00:00:00" {
+		t.Errorf("StartOfPrevMonth(2025-01-19) = %v; want 2024-12-01 00:00:00", got)
+	}
+	if got := FormatDateTime(StartOfNextMonth(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2025-02-01 00:00:00" {
+		t.Errorf("StartOfNextMonth(2025-01-19) = %v; want 2025-02-01 00:00:00", got)
+	}
+	if got := FormatDateTime(EndOfMonth(date), DATE_TIME_YEAR_MONTH_DATE_HOUR_MINUTE_SECOND); got != "2025-01-31 23:59:59" {
+		t.Errorf("EndOfMonth(2025-01-19) = %v; want 2025-01-31 23:59:59", got)
+	}
 }
 
 func TestStartOfYear(t *testing.T) {

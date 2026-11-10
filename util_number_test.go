@@ -27,6 +27,9 @@ func TestPlusNumber(t *testing.T) {
 	if got := PlusNumber(-2, -3); got != -5 {
 		t.Errorf("PlusNumber(-2, -3) = %v; want -5", got)
 	}
+	if got := PlusNumber(1, 2, 3, 4); got != 10 {
+		t.Errorf("PlusNumber(1, 2, 3, 4) = %v; want 10", got)
+	}
 }
 
 func TestMinusNumber(t *testing.T) {
@@ -47,6 +50,9 @@ func TestMinusNumber(t *testing.T) {
 	}
 	if got := MinusNumber(-2, -3); got != 1 {
 		t.Errorf("MinusNumber(-2, -3) = %v; want 1", got)
+	}
+	if got := MinusNumber(10, 4, 3, 2); got != 1 {
+		t.Errorf("MinusNumber(10, 4, 3, 2) = %v; want 1", got)
 	}
 }
 
@@ -95,6 +101,9 @@ func TestTimesNumber(t *testing.T) {
 	}
 	if got := TimesNumber(-2.1, -3.2); got != 6.72 {
 		t.Errorf("TimesNumber(-2.1, -3.2) = %v; want 6.72", got)
+	}
+	if got := TimesNumber(2, 3, 4, 5); got != 120 {
+		t.Errorf("TimesNumber(2, 3, 4, 5) = %v; want 120", got)
 	}
 }
 
@@ -149,6 +158,9 @@ func TestDivideNumber(t *testing.T) {
 	}
 	if got := DivideNumber(-4.4, -2.2); got != 2 {
 		t.Errorf("DivideNumber(-4.4, -2.2) = %v; want 2", got)
+	}
+	if got := DivideNumber(120, 4, 3); got != 10 {
+		t.Errorf("DivideNumber(120, 4, 3) = %v; want 10", got)
 	}
 }
 
