@@ -12,8 +12,8 @@ import (
 
 // PlusNumber 精确加法，比如 PlusNumber(3, 1) === 4
 func PlusNumber[T NumberType](values ...T) T {
-	if len(values) == 0 {
-		return T(0)
+	if len(values) < 2 {
+		panic("PlusNumber requires at least 2 argument")
 	}
 	d := decimal.NewFromFloat(float64(values[0]))
 	for _, v := range values[1:] {
@@ -25,8 +25,8 @@ func PlusNumber[T NumberType](values ...T) T {
 
 // MinusNumber 精确减法，比如 MinusNumber(3, 1) === 2
 func MinusNumber[T NumberType](values ...T) T {
-	if len(values) == 0 {
-		panic("MinusNumber requires at least one argument")
+	if len(values) < 2 {
+		panic("MinusNumber requires at least 2 argument")
 	}
 	d := decimal.NewFromFloat(float64(values[0]))
 	for _, v := range values[1:] {
@@ -38,8 +38,8 @@ func MinusNumber[T NumberType](values ...T) T {
 
 // TimesNumber 精确乘法，比如 TimesNumber(3, 2) === 6
 func TimesNumber[T NumberType](values ...T) T {
-	if len(values) == 0 {
-		return T(1)
+	if len(values) < 2 {
+		panic("TimesNumber requires at least 2 argument")
 	}
 	d := decimal.NewFromFloat(float64(values[0]))
 	for _, v := range values[1:] {
@@ -51,8 +51,8 @@ func TimesNumber[T NumberType](values ...T) T {
 
 // DivideNumber 精确除法，比如 DivideNumber(6, 2) === 3
 func DivideNumber[T NumberType](values ...T) T {
-	if len(values) == 0 {
-		panic("DivideNumber requires at least one argument")
+	if len(values) < 2 {
+		panic("DivideNumber requires at least 2 argument")
 	}
 	d := decimal.NewFromFloat(float64(values[0]))
 	for _, v := range values[1:] {
